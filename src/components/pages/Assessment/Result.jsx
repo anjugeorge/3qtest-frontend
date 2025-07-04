@@ -17,7 +17,6 @@ const Result = () => {
     agreeableness: `Agreeableness refers to a person’s tendency to be compassionate, cooperative, and empathetic toward others. Individuals with high agreeableness are typically friendly, helpful, and considerate, often striving for harmony in relationships. Those with lower agreeableness may be more competitive, critical, or less concerned with others’ feelings.`,
     neuroticism: `Neuroticism reflects the tendency to experience negative emotions such as anxiety, stress, and emotional instability. Individuals who score high in neuroticism may be more prone to worrying, feeling anxious, and experiencing mood swings. Those who score lower in neuroticism tend to be more emotionally stable, calm, and resilient in stressful situations.`,
   });
-  const [pdfFileName, setPdfFileName] = React.useState("");
   const [percentage, setPercentage] = React.useState({
     openness: 0,
     conscientiousness: 0,
@@ -80,14 +79,12 @@ const Result = () => {
       }
 
       const {
-        fileName,
         openness,
         conscientiousness,
         extraversion,
         agreeableness,
         neuroticism,
       } = response;
-      setPdfFileName(fileName);
       setPercentage((prevValue) => ({
         openness: openness ? openness.score : prevValue.openness,
         conscientiousness: conscientiousness
