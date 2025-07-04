@@ -42,7 +42,7 @@ const Test = () => {
                     free
                   </strong>{" "}
                   and get an insightful travel to discover who you are and
-                  receive the analysis reports by email.
+                  receive the analysis reports.
                 </p>
               </div>
               <div class="px-6 py-6 text-end">

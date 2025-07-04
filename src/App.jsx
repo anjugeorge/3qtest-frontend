@@ -12,46 +12,34 @@ import AboutUsPage from "./components/pages/AboutUs/AboutUsPage";
 import Test from "./components/pages/Landing/Test";
 import TestPage from "./components/pages/Test/TestPage";
 import ContactUs from "./components/pages/ContactUs/ContactUs";
-import Assessment from "./components/pages/Assessment/Assessment";
-import Login from "./components/pages/UserAuth/Login";
 import PersonalityAssessment from "./components/pages/Assessment/PersonalityAssessment";
 import Result from "./components/pages/Assessment/Result";
 import CareerAssessment from "./components/pages/Assessment/CareerAssessment";
-import Payment from "./components/pages/UserAuth/Payment";
 import Success from "./components/pages/Assessment/Success";
-
+import { AuthProvider } from "./context/AuthContext";
 const AppContent = () => {
-  const location = useLocation();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem("authToken");
-    if (token) {
-      setIsAuthenticated(true);
-    }
-  }, [location.pathname]);
   return (
     <>
-      <Navbar />
-      <Routes>
-        <Route exact path="/" Component={Landing}></Route>
-        <Route exact path="/about-us" Component={AboutUsPage}></Route>
-        <Route exact path="/test" Component={TestPage}></Route>
-        <Route
-          exact
-          path="/personality-assessment"
-          Component={PersonalityAssessment}
-        ></Route>
-        <Route
-          exact
-          path="/career-assessment"
-          Component={CareerAssessment}
-        ></Route>
-        <Route exact path="/results" Component={Result}></Route>
-        <Route exact path="/payment" Component={Payment}></Route>
-        <Route exact path="/success" Component={Success}></Route>
-      </Routes>
-      <Footer />
+      <AuthProvider>
+        {" "}
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Landing />}></Route>
+          <Route path="/about-us" element={<AboutUsPage />}></Route>
+          <Route path="/test" element={<TestPage />}></Route>
+          <Route
+            path="/personality-assessment"
+            element={<PersonalityAssessment />}
+          ></Route>
+          <Route
+            path="/career-assessment"
+            element={<CareerAssessment />}
+          ></Route>
+          <Route path="/results" element={<Result />}></Route>
+          <Route path="/success" element={<Success />}></Route>
+        </Routes>
+        <Footer />
+      </AuthProvider>
     </>
   );
 };

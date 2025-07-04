@@ -6,17 +6,17 @@ const personalityTestFeatures = [
   {
     id: 1,
     title: "Free Personality Test",
-    desc: `Get valuable insights into your personality and career potential.`,
+    desc: `Get valuable insights into your personality traits and how they relate to your career choices with our free 3QTest personality test.`,
   },
   {
     id: 2,
     title: "Personalized Reports",
-    desc: `Receive detailed analysis via email to help guide your career decisions.`,
+    desc: `Get a detailed personality-based analysis — designed to help you better understand yourself and your unique traits.`,
   },
   {
     id: 3,
-    title: "Expert Consultation",
-    desc: `Store reports for future consultations with our expert team for career success.`,
+    title: "Report Access Anytime",
+    desc: `Securely store your personalized reports for future reference and track your personal growth over time.`,
   },
 ];
 
@@ -33,8 +33,8 @@ const careerTestFeatures = [
   },
   {
     id: 3,
-    title: "Expert Consultation",
-    desc: ` Receive personalized guidance from our team after the assessment.`,
+    title: "Personalized Assessment Results",
+    desc: `Receive personalized insights based on your assessment results.`,
   },
 ];
 const TestPage = () => {
@@ -59,10 +59,9 @@ const TestPage = () => {
               Whether you’re considering a career change or assessing your
               current job, knowing your personality type can provide valuable
               insights. Take the free 3QTest personality test today to discover
-              more about yourself and receive an in-depth report via email.
-              Registered users can save their reports for future consultations
-              with our expert team, guiding you toward success. For a more
-              detailed career analysis, try the 3QTest for a small fee.
+              more about yourself and receive an in-depth results. Registered
+              users can save their reports for future. For a more detailed
+              career analysis, try the 3QTest for a small fee.
             </p>
           </div>
         </div>
@@ -107,12 +106,10 @@ const TestPage = () => {
               Looking to start your career but unsure where to begin? Our career
               assessment is designed to help you identify your strengths,
               interests, and ideal work environments, bringing you one step
-              closer to finding your dream job. For just $9.99, our team of
-              experts will help you uncover the career paths best suited to you.
-              Once you’ve completed the assessment, our team is also available
-              for personalized consultations to further guide you in making the
-              right career decisions. Start your journey to success today and
-              discover what you were meant to do!
+              closer to finding your dream job. For just $9.99, you’ll receive a
+              personalized report designed to help you understand your potential
+              and make informed career choices. Start your journey to success
+              today and discover what you were meant to do!
             </p>
           </div>
         </div>

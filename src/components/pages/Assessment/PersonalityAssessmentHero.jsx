@@ -1,6 +1,6 @@
 import React from "react";
 
-const AssessmentHero = () => {
+const PersonalityAssessmentHero = () => {
   return (
     <div className="flex flex-col">
       <div className="font-roboto my-auto text-gray-800">
@@ -25,4 +25,4 @@ const AssessmentHero = () => {
   );
 };
 
-export default AssessmentHero;
+export default PersonalityAssessmentHero;

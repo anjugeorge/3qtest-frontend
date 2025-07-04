@@ -1,10 +1,15 @@
-import React, { useState } from "react";
-import { useLocation } from "react-router";
-import Login from "../UserAuth/Login";
-import axios from "axios";
-
+import React, { use, useContext, useState } from "react";
+import { useLocation, useNavigate } from "react-router";
+import {
+  calculateCareerScoreAPI,
+  calculateScoreAPI,
+  getProtectedData,
+  getTestResultsAPI,
+} from "../../../api/apiService";
+import { AuthContext } from "../../../context/AuthContext";
+import Payment from "../UserAuth/Payment";
 const Result = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { user } = useContext(AuthContext);
   const [traitDesc, setTraitDesc] = React.useState({
     openness: `Openness trait reflects the extent to which a person is open-minded, imaginative, curious, and willing to try new things. People who score high on openness tend to be creative, curious, and eager to explore new ideas and experiences. They enjoy novel experiences and often think abstractly. In contrast, individuals with lower openness may prefer routine, tradition, and familiarity.`,
     conscientiousness: `Conscientiousness refers to an individual’s degree of self-discipline, organization, and goal-oriented behavior. People who score high on conscientiousness are typically reliable, responsible, and efficient, with a strong attention to detail. They are good at managing tasks and achieving goals. Those with lower conscientiousness may be more spontaneous, flexible, and sometimes disorganized.`,
@@ -12,7 +17,6 @@ const Result = () => {
     agreeableness: `Agreeableness refers to a person’s tendency to be compassionate, cooperative, and empathetic toward others. Individuals with high agreeableness are typically friendly, helpful, and considerate, often striving for harmony in relationships. Those with lower agreeableness may be more competitive, critical, or less concerned with others’ feelings.`,
     neuroticism: `Neuroticism reflects the tendency to experience negative emotions such as anxiety, stress, and emotional instability. Individuals who score high in neuroticism may be more prone to worrying, feeling anxious, and experiencing mood swings. Those who score lower in neuroticism tend to be more emotionally stable, calm, and resilient in stressful situations.`,
   });
-  const location = useLocation();
   const [pdfFileName, setPdfFileName] = React.useState("");
   const [percentage, setPercentage] = React.useState({
     openness: 0,
@@ -29,56 +33,60 @@ const Result = () => {
     agreeableness: "",
     neuroticism: "",
   });
-  const params = new URLSearchParams(location.search);
-  const userId = params.get("userId");
-
-  const testType = params.get("testType");
+  const [showPayment, setShowPayment] = React.useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { testType } = location.state;
   React.useEffect(() => {
+    if (!user) return;
     async function getTestResults() {
       try {
-        localStorage.setItem("userId", userId);
-        if (userId != null) {
-          const response = await axios.get(
-            `http://localhost:3000/getTestResults?userId=${userId}&testType=${testType}`
-          );
-          const { question_id, test_result } = response.data.result;
-          const questionIds = JSON.parse(question_id);
-          const testResults = JSON.parse(test_result);
-          console.log("questionIds", questionIds);
-          console.log("testResults", testResults);
-
-          calculateScore(questionIds, testResults);
+        if (testType === null) {
+          alert("Please take test");
         }
+        const response = await getTestResultsAPI(testType);
+        const { question_id, test_result } = response.result;
+
+        const questionIds = JSON.parse(question_id);
+        const testResults = JSON.parse(test_result);
+
+        calculateScore(questionIds, testResults);
       } catch (error) {
         console.log("Error: ", error);
       }
     }
     getTestResults();
-  }, []);
+  }, [user]);
 
   async function calculateScore(id, result) {
     try {
       let response;
       if (testType === "Career Test") {
-        response = await axios.get(
-          `http://localhost:3000/calculateCareerScore?id=${id}&result=${result}`
-        );
-      } else {
-        response = await axios.get(
-          `http://localhost:3000/calculateScore?id=${id}&result=${result}`
-        );
+        if (user.is_paid === 1) {
+          setShowPayment(false);
+          response = await calculateCareerScoreAPI(
+            id.join(","),
+            result.join(",")
+          );
+        } else {
+          setShowPayment(true);
+          alert(
+            "You have completed the test. To view your results, please proceed to payment"
+          );
+        }
+      } else if (testType === "Personality Test") {
+        response = await calculateScoreAPI(id.join(","), result.join(","));
       }
 
       const {
-        message,
         fileName,
         openness,
         conscientiousness,
         extraversion,
         agreeableness,
         neuroticism,
-      } = response.data;
-      console.log(response.data);
+      } = response;
       setPdfFileName(fileName);
       setPercentage((prevValue) => ({
         openness: openness ? openness.score : prevValue.openness,
@@ -105,261 +113,273 @@ const Result = () => {
           : prevValue.agreeableness,
         neuroticism: neuroticism ? neuroticism.desc : prevValue.neuroticism,
       }));
-      console.log(percentage);
-      /*navigate("/results", {
-        state: {
-          testType: "personalityTest",
-          percentage: {
-            Openness: openness ? openness.score : 0,
-            Conscientiousness: conscientiousness ? conscientiousness.score : 0,
-            Extraversion: extraversion ? extraversion.score : 0,
-            Agreeableness: agreeableness ? agreeableness.score : 0,
-            Neuroticism: neuroticism ? neuroticism.score : 0,
-          },
-          description: {
-            Openness: openness ? openness.desc : "",
-            Conscientiousness: conscientiousness ? conscientiousness.desc : "",
-            Extraversion: extraversion ? extraversion.desc : "",
-            Agreeableness: agreeableness ? agreeableness.desc : "",
-            Neuroticism: neuroticism ? neuroticism.desc : "",
-          },
-        },
-      });*/
-      console.log(response.data);
 
-      return response.data;
+      return response;
     } catch (error) {
       console.log("Error: ", error);
     }
   }
 
-  function toggleModal() {
-    setIsModalOpen(!isModalOpen);
+  function closePaymentModal() {
+    setIsPaymentModalOpen(!isPaymentModalOpen);
+    navigate("/");
   }
-  function closeModal() {
-    setIsModalOpen(false);
-  }
+
   return (
     <>
-      {testType === "Career Test" ? (
-        <>
-          <div className="flex flex-col">
-            <div className="font-roboto my-auto text-gray-800">
-              {" "}
-              <h1
-                className="text-4xl font-bold text-center py-10
-               "
-              >
-                Career Test Results
-              </h1>
-              <div className="container">
-                {" "}
-                <p className="text-xl md:text-2xl leading-[2] text-center mx-auto px-30 font-roboto">
-                  Based on your responses to the questionnaire, here's your
-                  career profile
-                </p>
-              </div>
-            </div>
-          </div>
-        </>
+      {showPayment ? (
+        <Payment closePaymentModal={closePaymentModal} />
       ) : (
         <>
           {" "}
-          <div className="flex flex-col">
-            <div className="font-roboto my-auto text-gray-800">
+          {testType === "Career Test" ? (
+            <>
+              <div className="flex flex-col">
+                <div className="font-roboto my-auto text-gray-800">
+                  {" "}
+                  <h1
+                    className="text-4xl font-bold text-center py-10
+               "
+                  >
+                    Career Test Results
+                  </h1>
+                  <div className="container">
+                    {" "}
+                    <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
+                      Hey there! Thanks for completing the 3QTest. Let’s take a
+                      detailed, friendly look. Understanding these can help you
+                      choose a career path where you’ll truly thrive — with a
+                      good fit for your natural style, strengths, and even
+                      challenges.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
               {" "}
-              <h1 className="text-4xl font-bold text-center py-10 ">
-                Personality Test Results
-              </h1>
-              <div className="container">
-                {" "}
-                <p className="text-xl md:text-2xl leading-[2] text-center mx-auto px-30 font-roboto">
-                  Based on your responses to the questionnaire, here's your
-                  personality profile
-                </p>
+              <div className="flex flex-col">
+                <div className="font-roboto my-auto text-gray-800">
+                  {" "}
+                  <h1 className="text-4xl font-bold text-center py-10 ">
+                    Personality Test Results
+                  </h1>
+                  <div className="container">
+                    {" "}
+                    <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
+                      Hey there! Thanks for completing the Personality Test.
+                      Let’s dive into a thoughtful, easy-to-understand breakdown
+                      of your unique traits.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </>
+          )}
+          <div className="container py-20">
+            {" "}
+            <div className="bg-gray-100 p-10">
+              <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold">
+                Results Overview
+              </p>
+              <div className=" py-5">
+                <div className="flex flex-row  py-5">
+                  {" "}
+                  <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
+                    Openness{" "}
+                  </p>
+                  <span className="text-gray-700 ml-auto">
+                    {percentage.openness}%
+                  </span>
+                </div>
+
+                <div className="h-4 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${
+                      percentage.Openness === null
+                        ? "bg-gray-200"
+                        : "bg-[#819A91]"
+                    }`}
+                    style={{
+                      width:
+                        percentage.Openness === null
+                          ? "0%"
+                          : `${percentage.openness}%`,
+                    }}
+                  ></div>
+                </div>
+
+                <div className="py-5">
+                  <p className="text-md/7 font-roboto leading-7">
+                    {traitDesc.openness}
+                  </p>
+                </div>
+                <div className="py-3">
+                  <p
+                    className="text-md/7 font-roboto leading-7"
+                    dangerouslySetInnerHTML={{ __html: desc.openness }}
+                  />{" "}
+                </div>
+              </div>
+              <div className="py-5">
+                <div className="flex flex-row  py-5">
+                  {" "}
+                  <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
+                    Conscientiousness{" "}
+                  </p>
+                  <span className="text-gray-700 ml-auto">
+                    {percentage.conscientiousness}%
+                  </span>
+                </div>
+                <div className="h-4  rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${
+                      percentage.Conscientiousness === null
+                        ? "bg-gray-200"
+                        : "bg-[#687FE5]"
+                    }`}
+                    style={{
+                      width:
+                        percentage.conscientiousness === null
+                          ? "0%"
+                          : `${percentage.conscientiousness}%`,
+                    }}
+                  ></div>
+                </div>
+                <div className="py-5">
+                  <p className="text-md/7 font-roboto leading-7">
+                    {traitDesc.conscientiousness}
+                  </p>
+                </div>
+                <div className="py-3">
+                  <p
+                    className="text-md/7 font-roboto leading-7"
+                    dangerouslySetInnerHTML={{ __html: desc.conscientiousness }}
+                  />
+                </div>
+              </div>
+              <div className=" py-5">
+                <div className="flex flex-row  py-5">
+                  {" "}
+                  <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
+                    Extraversion{" "}
+                  </p>
+                  <span className="text-gray-700 ml-auto">
+                    {percentage.extraversion}%
+                  </span>
+                </div>
+                <div className="h-4  rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${
+                      percentage.extraversion === null
+                        ? "bg-gray-200"
+                        : "bg-[#DEAA79]"
+                    }`}
+                    style={{
+                      width:
+                        percentage.extraversion === null
+                          ? "0%"
+                          : `${percentage.extraversion}%`,
+                      backgroundColor:
+                        percentage.extraversion === null
+                          ? "bg-gray-200"
+                          : "bg-pink-700 ",
+                    }}
+                  ></div>
+                </div>
+                <div className="py-5">
+                  <p className="text-md/7 font-roboto leading-7">
+                    {traitDesc.extraversion}
+                  </p>
+                </div>
+                <div className="py-5">
+                  <p
+                    className="text-md/7 font-roboto leading-7"
+                    dangerouslySetInnerHTML={{ __html: desc.extraversion }}
+                  />
+                </div>
+              </div>
+              <div className="py-3">
+                <div className="flex flex-row  py-5">
+                  {" "}
+                  <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
+                    Agreeableness{" "}
+                  </p>
+                  <span className="text-gray-700 ml-auto">
+                    {percentage.agreeableness}%
+                  </span>
+                </div>
+                <div className="h-4 rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${
+                      percentage.agreeableness === null
+                        ? "bg-gray-200"
+                        : "bg-[#8E7DBE]"
+                    }`}
+                    style={{
+                      width:
+                        percentage.agreeableness === null
+                          ? "0%"
+                          : `${percentage.agreeableness}%`,
+                      backgroundColor:
+                        percentage.neuroticism === null
+                          ? "bg-gray-200"
+                          : "bg-violet-600",
+                    }}
+                  ></div>
+                </div>
+                <div className="py-5">
+                  <p className="text-md/7 font-roboto leading-7">
+                    {traitDesc.agreeableness}
+                  </p>
+                </div>
+                <div className="py-3">
+                  <p
+                    className="text-md/7 font-roboto leading-7"
+                    dangerouslySetInnerHTML={{ __html: desc.agreeableness }}
+                  />
+                </div>
+              </div>
+              <div className="py-5">
+                <div className="flex flex-row  py-5">
+                  {" "}
+                  <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
+                    Neuroticism{" "}
+                  </p>
+                  <span className="text-gray-700 ml-auto">
+                    {percentage.neuroticism}%
+                  </span>
+                </div>
+                <div className="h-4  rounded-full overflow-hidden">
+                  <div
+                    className={`h-full ${
+                      percentage.neuroticism === null
+                        ? "bg-gray-200"
+                        : "bg-[#AF3E3E]"
+                    }`}
+                    style={{
+                      width:
+                        percentage.neuroticism === null
+                          ? "0%"
+                          : `${percentage.neuroticism}%`,
+                    }}
+                  ></div>
+                </div>{" "}
+                <div className="py-5">
+                  <p className="text-md/7 font-roboto leading-7">
+                    {traitDesc.neuroticism}
+                  </p>
+                </div>
+                <div className="py-3">
+                  <p
+                    className="text-md/7 font-roboto leading-7"
+                    dangerouslySetInnerHTML={{ __html: desc.neuroticism }}
+                  />
+                </div>
               </div>
             </div>
-          </div>
-        </>
-      )}
-      <div className="container py-20">
-        {" "}
-        <div className="bg-gray-100 p-10">
-          <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold">
-            Results Overview
-          </p>
-          <div className=" py-5">
-            <div className="flex flex-row  py-5">
-              {" "}
-              <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                Openness{" "}
-              </p>
-              <span className="text-gray-700 ml-auto">
-                {percentage.openness}%
-              </span>
-            </div>
-
-            <div className="h-4 rounded-full overflow-hidden">
-              <div
-                className={`h-full ${
-                  percentage.Openness === null ? "bg-gray-200" : "bg-[#819A91]"
-                }`}
-                style={{
-                  width:
-                    percentage.Openness === null
-                      ? "0%"
-                      : `${percentage.openness}%`,
-                }}
-              ></div>
-            </div>
-
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">{traitDesc.openness}</p>
-            </div>
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">{desc.openness}</p>
-            </div>
-          </div>
-          <div className="py-5">
-            <div className="flex flex-row  py-5">
-              {" "}
-              <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                Conscientiousness{" "}
-              </p>
-              <span className="text-gray-700 ml-auto">
-                {percentage.conscientiousness}%
-              </span>
-            </div>
-            <div className="h-4  rounded-full overflow-hidden">
-              <div
-                className={`h-full ${
-                  percentage.Conscientiousness === null
-                    ? "bg-gray-200"
-                    : "bg-[#687FE5]"
-                }`}
-                style={{
-                  width:
-                    percentage.conscientiousness === null
-                      ? "0%"
-                      : `${percentage.conscientiousness}%`,
-                }}
-              ></div>
-            </div>
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">
-                {traitDesc.conscientiousness}
-              </p>
-            </div>
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">{desc.conscientiousness}</p>
-            </div>
-          </div>
-          <div className=" py-5">
-            <div className="flex flex-row  py-5">
-              {" "}
-              <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                Extraversion{" "}
-              </p>
-              <span className="text-gray-700 ml-auto">
-                {percentage.extraversion}%
-              </span>
-            </div>
-            <div className="h-4  rounded-full overflow-hidden">
-              <div
-                className={`h-full ${
-                  percentage.extraversion === null
-                    ? "bg-gray-200"
-                    : "bg-[#DEAA79]"
-                }`}
-                style={{
-                  width:
-                    percentage.extraversion === null
-                      ? "0%"
-                      : `${percentage.extraversion}%`,
-                  backgroundColor:
-                    percentage.extraversion === null
-                      ? "bg-gray-200"
-                      : "bg-pink-700 ",
-                }}
-              ></div>
-            </div>
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">{traitDesc.extraversion}</p>
-            </div>
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">{desc.extraversion}</p>
-            </div>
-          </div>
-          <div className="py-5">
-            <div className="flex flex-row  py-5">
-              {" "}
-              <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                Agreeableness{" "}
-              </p>
-              <span className="text-gray-700 ml-auto">
-                {percentage.agreeableness}%
-              </span>
-            </div>
-            <div className="h-4 rounded-full overflow-hidden">
-              <div
-                className={`h-full ${
-                  percentage.agreeableness === null
-                    ? "bg-gray-200"
-                    : "bg-[#8E7DBE]"
-                }`}
-                style={{
-                  width:
-                    percentage.agreeableness === null
-                      ? "0%"
-                      : `${percentage.agreeableness}%`,
-                  backgroundColor:
-                    percentage.neuroticism === null
-                      ? "bg-gray-200"
-                      : "bg-violet-600",
-                }}
-              ></div>
-            </div>
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">{traitDesc.agreeableness}</p>
-            </div>
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">{desc.agreeableness}</p>
-            </div>
-          </div>
-          <div className="py-5">
-            <div className="flex flex-row  py-5">
-              {" "}
-              <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                Neuroticism{" "}
-              </p>
-              <span className="text-gray-700 ml-auto">
-                {percentage.neuroticism}%
-              </span>
-            </div>
-            <div className="h-4  rounded-full overflow-hidden">
-              <div
-                className={`h-full ${
-                  percentage.neuroticism === null
-                    ? "bg-gray-200"
-                    : "bg-[#AF3E3E]"
-                }`}
-                style={{
-                  width:
-                    percentage.neuroticism === null
-                      ? "0%"
-                      : `${percentage.neuroticism}%`,
-                }}
-              ></div>
-            </div>{" "}
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">{traitDesc.neuroticism}</p>
-            </div>
-            <div className="py-5">
-              <p className="text-md/7 font-roboto">{desc.neuroticism}</p>
-            </div>
-          </div>
-        </div>
-        {/*<div className="flex flex-row py-10">
+            {/*<div className="flex flex-row py-10">
           <div className="ml-auto">
             <button
               onClick={toggleModal}
@@ -371,7 +391,9 @@ const Result = () => {
             {isModalOpen && <Login />}
           </div>
         </div>*/}
-      </div>
+          </div>
+        </>
+      )}
     </>
   );
 };

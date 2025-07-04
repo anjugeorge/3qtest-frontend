@@ -1,25 +1,20 @@
-import axios from "axios";
-import React, { useEffect, useState } from "react";
-import AssessmentHero from "./AssessmentHero";
-import Result from "./Result";
-import SendEmail from "../UserAuth/SendEmail";
-import { useLocation, useNavigate } from "react-router";
-import { LogIn } from "lucide-react";
-import Login from "../UserAuth/Login";
-import Token from "../UserAuth/Token";
+import React, { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import Register from "../UserAuth/Register";
 import CareerAssessmentHero from "./CareerAssessmentHero";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFaceFrown } from "@fortawesome/free-solid-svg-icons";
-import { faFaceFrownOpen } from "@fortawesome/free-solid-svg-icons";
-import { faFaceMeh } from "@fortawesome/free-solid-svg-icons";
-import { faFaceSmileBeam } from "@fortawesome/free-solid-svg-icons";
-import { faFaceLaughBeam } from "@fortawesome/free-solid-svg-icons";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import { FaRegCircle } from "react-icons/fa6";
-import { faCircle } from "@fortawesome/free-solid-svg-icons";
+import { radioOptions } from "../../../constants/radioOptions";
+import {
+  getCareerQuestionsAPI,
+  getProtectedData,
+  getTestResultsAPI,
+  saveResultsAPI,
+  updateCompletedTestFieldAPI,
+} from "../../../api/apiService";
+import Login from "../UserAuth/Login";
+import { AuthContext } from "../../../context/AuthContext";
+import Payment from "../UserAuth/Payment";
 const CareerAssessment = () => {
-  const [isLogin, setIsLogin] = React.useState(false);
+  const { isLoggedIn, user } = useContext(AuthContext);
   const [selectedValue, setSelectedValue] = React.useState("");
   const [questionId, setQuestionId] = useState([]);
   const [questions, setQuestions] = useState([]);
@@ -27,105 +22,26 @@ const CareerAssessment = () => {
   const [id, setId] = React.useState([]);
   const [result, setResult] = React.useState([]);
   const [pdfFileName, setPdfFileName] = React.useState("");
-  const [percentage, setPercentage] = React.useState({
-    openness: 0,
-    conscientiousness: 0,
-    extraversion: 0,
-    agreeableness: 0,
-    neuroticism: 0,
-  });
-
-  const [desc, setDesc] = React.useState({
-    openness: "",
-    conscientiousness: "",
-    extraversion: "",
-    agreeableness: "",
-    neuroticism: "",
-  });
   const [allQuestionsAnswered, setAllQuestionsAnswered] = React.useState(false);
-
-  const location = useLocation();
-  //const userId = location.state?.userId || localStorage.getItem("userId");
-  //const params = new URLSearchParams(location.search);
-
-  const authToken = localStorage.getItem("authToken");
-  const isPaid = localStorage.getItem("isPaid");
-
-  //const sessionId = localStorage.getItem("sessionId");
+  const [showPayment, setShowPayment] = React.useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const navigate = useNavigate();
 
-  const options = [
-    {
-      id: 1,
-      title: "Strongly Disagree",
-      value: "stronglyDisagree",
-      class: `flex flex-col  my-auto  mx-auto  cursor-pointer rounded-full w-20 h-20  border-4 border-[#898AC4]  items-center justify-center`,
-      icon: `${
-        selectedValue === "stronglyDisagree" ? "bg-[#898AC4]" : "bg-white"
-      }`,
-    },
-    {
-      id: 2,
-      title: "Disagree",
-      value: "disagree",
-      class: `flex flex-col  my-auto  mx-auto   cursor-pointer rounded-full w-16 h-16  border-4 border-[#898AC4]   items-center justify-center`,
-      icon: `${selectedValue === "disagree" ? "bg-[#898AC4]" : "bg-white"}`,
-    },
-    {
-      id: 3,
-      title: "Neutral",
-      value: "neutral",
-      class: `flex flex-col  my-auto  mx-auto  cursor-pointer rounded-full w-10 h-10  border-4 border-[#A6AEBF]   items-center justify-center`,
-      icon: `${selectedValue === "neutral" ? "bg-[#A6AEBF]" : "bg-white"}`,
-    },
-    {
-      id: 4,
-      title: "Agree",
-      value: "agree",
-      class: `flex flex-col  my-auto  mx-auto   tcursor-pointer rounded-full w-16 h-16  border-4 border-[#819A91]   items-center justify-center`,
-      icon: `${selectedValue === "agree" ? "bg-[#819A91]" : "bg-white"}`,
-    },
-    {
-      id: 5,
-      title: "Strongly Agree",
-      value: "stronglyAgree",
-      class: `flex flex-col  my-auto  mx-auto  text-slate-800 cursor-pointer rounded-full w-20 h-20  border-4 border-[#819A91] hover:bg-blueviolet  items-center justify-center`,
+  const options = radioOptions(selectedValue);
 
-      icon: `${
-        selectedValue === "stronglyAgree" ? "bg-[#819A91]" : "bg-white"
-      }`,
-    },
-  ];
-
-  const userId = localStorage.getItem("userId");
-
-  React.useEffect(() => {
+  useEffect(() => {
     async function getTestResults() {
       try {
-        if (authToken) {
-          setIsLogin(true);
-        }
-
-        if (userId != null) {
-          const response = await axios.get(
-            `http://localhost:3000/getTestResults?userId=${userId}&testType=Career Test`
-          );
-          if (response.data.result == null) {
-            const response = await axios.get(
-              "http://localhost:3000/careerQuestions"
-            );
-            console.log(response.data);
-            setQuestionId(response.data.id);
-            setQuestions(response.data.question);
+        if (isLoggedIn) {
+          const response = await getTestResultsAPI("Career Test");
+          if (user.is_paid === 0 && response.result == null) {
+            const response = await getCareerQuestionsAPI();
+            setQuestionId(response.id);
+            setQuestions(response.question);
           } else {
-            navigate(`/results?userId=${userId}&testType=Career Test`);
-            //const { question_id, test_result } = response.data.result;
-            // const questionIds = JSON.parse(question_id);
-            //const testResults = JSON.parse(test_result);
-            //console.log("questionIds", questionIds);
-            //console.log("testResults", testResults);
-            //setAllQuestionsAnswered(true);
-            //calculateScore(questionIds, testResults, false);
+            navigate(`/results`, {
+              state: { testType: "Career Test" },
+            });
           }
         }
       } catch (error) {
@@ -135,15 +51,14 @@ const CareerAssessment = () => {
     getTestResults();
   }, []);
 
+  function closePaymentModal() {
+    setIsPaymentModalOpen(!isPaymentModalOpen);
+    navigate("/");
+  }
+
   const handleChange = (value) => {
     setSelectedValue(value);
   };
-
-  /*function gotoPreviousQueston() {
-    if (currentQuestionId > 0) {
-      setCurrentQuestionId(currentQuestionId - 1);
-    }
-  }*/
 
   async function gotoNextQuestion() {
     const updatedResults = [...result, selectedValue];
@@ -161,26 +76,23 @@ const CareerAssessment = () => {
         setAllQuestionsAnswered(questionsAnswered);
         localStorage.setItem("questionId", JSON.stringify(updatedIds));
         localStorage.setItem("results", JSON.stringify(updatedResults));
-        //calculateScore(updatedIds, updatedResults, true);
-        const response = await axios.post(
-          `http://localhost:3000/updateCompletedTestField?userId=${userId}`
+        await saveResultsAPI(
+          JSON.stringify(updatedIds),
+          JSON.stringify(updatedResults),
+          "Career Test"
         );
-        console.log("response", response.data);
-        if (response.data) {
-          navigate("/payment");
+        const response = await updateCompletedTestFieldAPI();
+
+        if (response) {
+          setShowPayment(true);
         }
-        //calculateScore(updatedIds, updatedResults, true);
       }
     } else {
       alert("Please select an option to continue");
     }
   }
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  function toggleModal() {
-    setIsModalOpen(!isModalOpen);
-  }
-  return isLogin ? (
+  return isLoggedIn ? (
     <>
       <form>
         <CareerAssessmentHero />
@@ -192,7 +104,7 @@ const CareerAssessment = () => {
               </label>
             </div>
 
-            <label className="text-2xl md:text-4xl">
+            <label className="text-2xl md:text-4xl text-gray-700">
               {questions[currentQuestionId]}
             </label>
 
@@ -218,14 +130,6 @@ const CareerAssessment = () => {
               </div>
             </div>
             <div className="mx-auto">
-              {/* Optional Previous Button */}
-              {/*<button
-                type="button"
-                onClick={gotoPreviousQueston}
-                className="mr-2 bg-gray-200 hover:bg-purple-950 hover:text-white w-12 h-10 text-purple-900 text-[14px] font-bold rounded-lg"
-              >
-                <FontAwesomeIcon icon={faArrowLeft} />
-              </button>*/}
               <button
                 type="button"
                 onClick={gotoNextQuestion}
@@ -237,9 +141,10 @@ const CareerAssessment = () => {
           </div>
         </div>
       </form>
+      {showPayment && <Payment closePaymentModal={closePaymentModal} />}
     </>
   ) : (
-    <Register />
+    <Login />
   );
 };
 

@@ -1,30 +1,45 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router";
+import { checkoutAPI } from "../../../api/apiService";
+import { AuthContext } from "../../../context/AuthContext";
 
-const Payment = () => {
+const Payment = ({ closePaymentModal }) => {
+  const { isLoggedIn, user } = useContext(AuthContext);
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId");
-  const email = localStorage.getItem("email");
-  console.log("User ID:", userId);
-  console.log("Email", localStorage.getItem("email"));
+
+  useEffect(() => {
+    if (!user) return;
+
+    if (user.is_paid === 1) {
+      alert("You have already paid for the test");
+      navigate("/results", {
+        state: { testType: "Career Test" },
+      });
+    }
+  }, [user]);
+
   const checkout = async (event) => {
     try {
       event.preventDefault();
-      const response = await axios.post("http://localhost:3000/checkout", {
-        userId: userId,
-        email: email,
-      });
-      if (response.data.url) {
+      const response = await checkoutAPI();
+
+      if (response.url) {
         // Redirect to the Stripe checkout page
         //localStorage.setItem("userId", userId);
-        window.location.href = response.data.url;
+        window.location.href = response.url;
       }
       // navigate("/career-assessment");
     } catch (err) {
-      alert(err.response.data.message);
-      navigate("/career-assessment");
+      if (!isLoggedIn) {
+        alert("please login and take test");
+        navigate("/");
+      } else if (isLoggedIn && err.response.status === 403) {
+        alert("Please complete the test");
+        navigate("/career-assessment");
+      }
+
       console.log("Error", err);
     }
   };
@@ -34,21 +49,44 @@ const Payment = () => {
         id="authentication-modal"
         tabindex="-1"
         aria-hidden="true"
-        className="flex fixed  z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+        className="flex fixed  z-50 justify-center items-center w-full inset-0 h-[calc(100%-1rem)] max-h-full"
       >
         <div className="relative p-4 w-full max-w-md max-h-full">
           <div className="relative  shadow-lg bg-gray-100">
-            <div className="flex flex-col items-center  justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
+            <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                Complete Payment to Access Results!
+                Complete Payment to View Results{" "}
               </h3>
-              <div>
-                <p className="text-sm text-center text-gray-700 mt-2 mb-2">
-                  To view your Career Test results, please complete the payment
-                  of <strong>$9.99</strong>. This unlocks your personalized
-                  career recommendations and suitable career paths.
-                </p>
-              </div>
+              <button
+                type="button"
+                onClick={closePaymentModal}
+                className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                data-modal-hide="authentication-modal"
+              >
+                <svg
+                  className="w-3 h-3"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 14 14"
+                >
+                  <path
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
+                  />
+                </svg>
+                <span className="sr-only">Close modal</span>
+              </button>
+            </div>
+            <div className="p-4 md:p-5 text-sm text-gray-800">
+              <p className=" font-roboto leading-7 py-1 px-3 text-center md:text-start">
+                To view your Career Test results, please complete the payment of{" "}
+                <strong>$9.99</strong>. This unlocks your personalized career
+                recommendations and suitable career paths.
+              </p>
             </div>
             <div className="p-4 md:p-5">
               <form className="space-y-4" action="#">

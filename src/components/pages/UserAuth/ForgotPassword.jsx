@@ -1,13 +1,17 @@
-import axios from "axios";
 import React, { useState } from "react";
-
+import { forgotPasswordAPI } from "../../../api/apiService";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 const ForgotPassword = () => {
   const [newPassword, setNewPassword] = useState({
     email: "",
     password: "",
   });
   const [isResetPasswordOpen, setResetPasswordOpen] = useState(true);
-
+  const [showPassword, setShowPassword] = useState(false);
+  function toggleShowPassword(event) {
+    event.preventDefault();
+    setShowPassword((prevState) => !prevState);
+  }
   function closeResetPassword() {
     setResetPasswordOpen(false);
   }
@@ -32,14 +36,13 @@ const ForgotPassword = () => {
   const resetPassword = async (event) => {
     try {
       event.preventDefault();
-      console.log(newPassword.email);
-      console.log(newPassword.password);
-      const response = await axios.post(
-        "http://localhost:3000/forgotPassword",
-        {
-          email: newPassword.email,
-          password: newPassword.password,
-        }
+      if (!newPassword.email || !newPassword.password) {
+        alert("Please fill in both email and password.");
+        return;
+      }
+      const response = await forgotPasswordAPI(
+        newPassword.email,
+        newPassword.password
       );
       closeResetPassword();
       alert("Password changed successfully");
@@ -54,10 +57,10 @@ const ForgotPassword = () => {
           id="authentication-modal"
           tabindex="-1"
           aria-hidden="true"
-          className="flex fixed  z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full"
+          className="flex fixed  z-50 justify-center items-center w-full inset-0 h-[calc(100%-1rem)] max-h-full"
         >
           <div className="relative p-4 w-full max-w-md max-h-full">
-            <div className="relative  shadow-lg bg-gray-100">
+            <div className="relative  shadow-lg bg-gray-100 h-[400px] overflow-y-auto">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
                   Reset Password
@@ -108,21 +111,28 @@ const ForgotPassword = () => {
                   </div>
                   <div>
                     <label
-                      for="fName"
+                      for="password"
                       className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                     >
-                      Enter New Password
+                      Enter new password
                     </label>
                     <input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       name="password"
                       id="password"
                       placeholder="••••••••"
                       className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      minLength={8}
                       required
                       value={newPassword.password}
                       onChange={handleChange}
                     />
+                    <button
+                      className="absolute right-8 top-[13.6rem]"
+                      onClick={toggleShowPassword}
+                    >
+                      {showPassword ? <FaEyeSlash /> : <FaEye />}
+                    </button>
                   </div>
 
                   <button

@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useState } from "react";
 import { Mail, Phone, MapPin } from "lucide-react";
 import ContactUs from "../ContactUs/ContactUs";
+import TermsAndConditions from "../Terms-Conditions/TermsAndConditions";
 const NavbarMenu = [
   {
     id: 1,
@@ -19,6 +20,13 @@ const NavbarMenu = [
   },
 ];
 const Footer = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  function openModal() {
+    setIsModalOpen(!isModalOpen);
+  }
+  function closeModal() {
+    setIsModalOpen(false);
+  }
   return (
     <div>
       {" "}
@@ -47,6 +55,10 @@ const Footer = () => {
                   </li>
                 ))}
               </ul>
+              <div className="text-start text-gray-300 pt-2 text-sm">
+                <button onClick={openModal}>Terms and Conditions</button>
+                {isModalOpen && <TermsAndConditions closeModal={closeModal} />}
+              </div>
             </div>
           </div>
           <div className="grid grid-cols-1 py-5">

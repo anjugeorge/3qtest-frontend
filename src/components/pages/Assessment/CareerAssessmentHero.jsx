@@ -7,7 +7,7 @@ const CareerAssessmentHero = () => {
       <div className="flex flex-col">
         <div className="font-roboto my-auto text-gray-800">
           {" "}
-          <h1 className="text-4xl font-bold text-center py-10 text-slate-900 ">
+          <h1 className="text-4xl font-bold text-center py-10 text-slate-800 ">
             {" "}
             Career Test
           </h1>

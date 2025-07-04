@@ -6,7 +6,7 @@ const AboutUsHero = () => {
       <div className="flex flex-col bg-purple-50">
         <div className="font-roboto ">
           {" "}
-          <h1 className="text-4xl font-bold text-center py-10 text-slate-900">
+          <h1 className="text-4xl font-bold text-center py-10 text-slate-800">
             About Us
           </h1>
           <p className="text-xl md:text-2xl leading-loose md:w-1/2 text-center mx-auto px-5 text-slate-800">
