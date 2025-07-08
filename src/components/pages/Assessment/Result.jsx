@@ -32,6 +32,10 @@ const Result = () => {
     agreeableness: "",
     neuroticism: "",
   });
+  const [bestCareer, setBestCareer] = React.useState({
+    name: "",
+    careerDesc: "",
+  });
   const [showPayment, setShowPayment] = React.useState(false);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const navigate = useNavigate();
@@ -84,6 +88,7 @@ const Result = () => {
         extraversion,
         agreeableness,
         neuroticism,
+        bestCareer,
       } = response;
       setPercentage((prevValue) => ({
         openness: openness ? openness.score : prevValue.openness,
@@ -110,6 +115,11 @@ const Result = () => {
           : prevValue.agreeableness,
         neuroticism: neuroticism ? neuroticism.desc : prevValue.neuroticism,
       }));
+
+      setBestCareer({
+        name: bestCareer.name,
+        careerDesc: bestCareer.careerDesc, // Make sure the description is being passed here
+      });
 
       return response;
     } catch (error) {
@@ -143,11 +153,11 @@ const Result = () => {
                   <div className="container">
                     {" "}
                     <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
-                      Hey there! Thanks for completing the 3QTest. Let’s take a
-                      detailed, friendly look. Understanding these can help you
-                      choose a career path where you’ll truly thrive — with a
-                      good fit for your natural style, strengths, and even
-                      challenges.
+                      Hey there! Thanks for completing the Career Test. Let’s
+                      take a detailed, friendly look. Understanding these can
+                      help you choose a career path where you’ll truly thrive —
+                      with a good fit for your natural style, strengths, and
+                      even challenges.
                     </p>
                   </div>
                 </div>
@@ -166,8 +176,10 @@ const Result = () => {
                     {" "}
                     <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
                       Hey there! Thanks for completing the Personality Test.
-                      Let’s dive into a thoughtful, easy-to-understand breakdown
-                      of your unique traits.
+                      Now, let's take a deeper dive into a thoughtful and
+                      easy-to-understand breakdown of your unique traits, so you
+                      can better understand your strengths, preferences, and
+                      areas for growth.
                     </p>
                   </div>
                 </div>
@@ -180,6 +192,29 @@ const Result = () => {
               <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold">
                 Results Overview
               </p>
+              <div className=" pt-2">
+                <div className="flex flex-col pt-3">
+                  {" "}
+                  <p className="text-md/7 font-roboto leading-7 py-2">
+                    <strong>Hey, {user?.name || "Guest"}!</strong>
+                  </p>
+                  {testType === "Career Test" ? (
+                    <p className="text-md/7 font-roboto leading-7">
+                      Based on your personality profile, your top career match
+                      is <strong>{bestCareer.name}</strong>
+                    </p>
+                  ) : (
+                    <p className="text-md/7 font-roboto leading-7">
+                      Based on your personality assessment, your key traits
+                      highlight that you are best described as...
+                    </p>
+                  )}
+                  <p className="text-md/7 font-roboto leading-7">
+                    {bestCareer.careerDesc}
+                  </p>
+                </div>
+              </div>
+
               <div className=" py-5">
                 <div className="flex flex-row  py-5">
                   {" "}
