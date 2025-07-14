@@ -34,9 +34,10 @@ const Footer = () => {
         <div className="container py-20">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="lg:mx-auto ">
-              <h1 className="lg:text-3xl md:text-2xl text-lg text-start font-bold pb-5">
-                3QTest
-              </h1>
+              <a href="/" className="flex space-x-2 py-4">
+                <img src="/assets/favicon.ico" className="w-8" />
+                <h1 className="text-2xl font-bold italic ">3QTest</h1>
+              </a>
               <p className=" text-sm/7 text-start text-gray-300">
                 3QTest is a Canadian-based company that helps you find the best
                 career choice for yourself based on your personality traits.We
@@ -126,7 +127,7 @@ const Footer = () => {
           </div>
           <div className=" text-gray-300 text-sm text-center mt-5">
             <p className=" mt-5">
-              © {new Date().getFullYear()} 3QTest. All Rights Reserved.
+              © {new Date().getFullYear()} 3QTest by APSS. All rights reserved.
             </p>
           </div>
         </div>

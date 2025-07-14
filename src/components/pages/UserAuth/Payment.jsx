@@ -2,23 +2,21 @@ import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
 import { useLocation } from "react-router";
 import { useNavigate } from "react-router";
-import { checkoutAPI } from "../../../api/apiService";
+import {
+  checkoutAPI,
+  getProtectedData,
+  paymentAccess,
+} from "../../../api/apiService";
 import { AuthContext } from "../../../context/AuthContext";
 
-const Payment = ({ closePaymentModal }) => {
-  const { isLoggedIn, user } = useContext(AuthContext);
+const Payment = () => {
   const navigate = useNavigate();
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
-  useEffect(() => {
-    if (!user) return;
-
-    if (user.is_paid === 1) {
-      alert("You have already paid for the test");
-      navigate("/results", {
-        state: { testType: "Career Test" },
-      });
-    }
-  }, [user]);
+  function closePaymentModal() {
+    setIsPaymentModalOpen(!isPaymentModalOpen);
+    navigate("/");
+  }
 
   const checkout = async (event) => {
     try {
@@ -31,16 +29,30 @@ const Payment = ({ closePaymentModal }) => {
         window.location.href = response.url;
       }
       // navigate("/career-assessment");
-    } catch (err) {
+    } catch (error) {
+      const isLoggedInOnce = sessionStorage.getItem("isLoggedInOnce");
+
+      if (
+        error.response?.status === 401 &&
+        error.response?.data?.TokenExpired &&
+        isLoggedInOnce === "true"
+      ) {
+        sessionStorage.setItem("TokenExpired", "true");
+        alert(
+          error.response.data.message || "Session expired. Please log in again."
+        );
+        sessionStorage.removeItem("isLoggedInOnce");
+        window.location.href = "/";
+
+        return;
+      }
       if (!isLoggedIn) {
         alert("please login and take test");
         navigate("/");
-      } else if (isLoggedIn && err.response.status === 403) {
+      } else if (isLoggedIn && error.response.status === 403) {
         alert("Please complete the test");
         navigate("/career-assessment");
       }
-
-      console.log("Error", err);
     }
   };
   return (

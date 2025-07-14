@@ -51,6 +51,7 @@ const Login = ({ closeModal, redirectPath, setRedirectPath }) => {
       const response = await loginAPI(login.email, login.password);
 
       if (response.result) {
+        sessionStorage.setItem("isLoggedInOnce", "true");
         //localStorage.setItem("userName", response.result.name);
         //localStorage.setItem("email", response.result.email);
         //localStorage.setItem("isPaid", response.result.is_paid);

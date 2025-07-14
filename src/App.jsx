@@ -17,6 +17,7 @@ import Result from "./components/pages/Assessment/Result";
 import CareerAssessment from "./components/pages/Assessment/CareerAssessment";
 import Success from "./components/pages/Assessment/Success";
 import { AuthProvider } from "./context/AuthContext";
+import NotFound from "./components/pages/UserAuth/NotFound";
 const AppContent = () => {
   return (
     <>
@@ -37,6 +38,7 @@ const AppContent = () => {
           ></Route>
           <Route path="/results" element={<Result />}></Route>
           <Route path="/success" element={<Success />}></Route>
+          <Route path="/payment" element={<NotFound />}></Route>
         </Routes>
         <Footer />
       </AuthProvider>

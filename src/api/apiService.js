@@ -5,10 +5,28 @@ export const getProtectedData = async () => {
     const response = await axiosInstance.get(`/protected`, {
       withCredentials: true,
     });
+
+    // Reset flag after successful request
+    sessionStorage.removeItem("TokenExpired");
+
+    console.log(response);
     return response.data;
   } catch (error) {
-    console.error("Error updating completed test field:", error);
-    throw error;
+    const isLoggedInOnce = sessionStorage.getItem("isLoggedInOnce");
+
+    if (
+      error.response?.status === 401 &&
+      error.response?.data?.TokenExpired &&
+      isLoggedInOnce === "true"
+    ) {
+      sessionStorage.setItem("TokenExpired", "true");
+      alert(
+        error.response.data.message || "Session expired. Please log in again."
+      );
+      sessionStorage.removeItem("isLoggedInOnce");
+      window.location.href = "/";
+    }
+    return;
   }
 };
 
@@ -91,6 +109,7 @@ export const getTestResultsAPI = async (testType) => {
     const response = await axiosInstance.post(`/getTestResults`, {
       testType: testType,
     });
+    console.log(response);
     return response.data;
   } catch (error) {
     console.error("Error fetching test results:", error);
@@ -159,6 +178,7 @@ export const checkoutAPI = async () => {
       {},
       { withCredentials: true }
     );
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Error while checkout:", error);
@@ -169,6 +189,16 @@ export const checkoutAPI = async () => {
 export const updateIsPaidField = async () => {
   try {
     const response = await axiosInstance.post(`/updateIsPaidField`);
+    return response.data;
+  } catch (error) {
+    console.error("Error updating is-paid:", error);
+    throw error;
+  }
+};
+
+export const paymentAccess = async () => {
+  try {
+    const response = await axiosInstance.post(`/paymentAccess`);
     return response.data;
   } catch (error) {
     console.error("Error updating is-paid:", error);

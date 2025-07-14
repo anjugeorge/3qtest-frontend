@@ -10,7 +10,6 @@ const Hero = () => {
           loop
           muted
           playsInline
-          loading="lazy"
         >
           <source src="/assets/3qtest-banner.mp4" type="video/mp4" />
         </video>

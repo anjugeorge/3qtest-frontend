@@ -8,6 +8,7 @@ import {
 } from "../../../api/apiService";
 import { AuthContext } from "../../../context/AuthContext";
 import Payment from "../UserAuth/Payment";
+import Landing from "../Landing/Landing";
 const Result = () => {
   const { user } = useContext(AuthContext);
   const [traitDesc, setTraitDesc] = React.useState({
@@ -40,44 +41,76 @@ const Result = () => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { testType } = location.state;
+  const testType = location.state?.testType || null;
+
   React.useEffect(() => {
     if (!user) return;
+    if (testType === null) {
+      setTimeout(() => {
+        alert(
+          "To view your results, please select a test type first. If you haven’t taken any test, please complete one to continue."
+        );
+        window.location.href = "/";
+      }, 100);
+
+      return;
+    }
     async function getTestResults() {
       try {
-        if (testType === null) {
-          alert("Please take test");
-        }
         const response = await getTestResultsAPI(testType);
-        const { question_id, test_result } = response.result;
+        if (response.showPaymentModal) {
+          setShowPayment(true);
+          alert(
+            "You have completed the test. To view your results, please proceed to payment"
+          );
+        } else {
+          setShowPayment(false);
+          const { question_id, test_result } = response.result;
 
-        const questionIds = JSON.parse(question_id);
-        const testResults = JSON.parse(test_result);
+          const questionIds = JSON.parse(question_id);
+          const testResults = JSON.parse(test_result);
 
-        calculateScore(questionIds, testResults);
+          calculateScore(questionIds, testResults);
+        }
       } catch (error) {
-        console.log("Error: ", error);
+        const isLoggedInOnce = sessionStorage.getItem("isLoggedInOnce");
+
+        if (
+          error.response?.status === 401 &&
+          error.response?.data?.TokenExpired &&
+          isLoggedInOnce === "true"
+        ) {
+          sessionStorage.setItem("TokenExpired", "true");
+          alert(
+            error.response.data.message ||
+              "Session expired. Please log in again."
+          );
+          sessionStorage.removeItem("isLoggedInOnce");
+          window.location.href = "/";
+
+          return;
+        }
       }
     }
     getTestResults();
-  }, [user]);
+  }, [user, testType]);
 
   async function calculateScore(id, result) {
     try {
       let response;
       if (testType === "Career Test") {
-        if (user.is_paid === 1) {
-          setShowPayment(false);
-          response = await calculateCareerScoreAPI(
-            id.join(","),
-            result.join(",")
-          );
-        } else {
-          setShowPayment(true);
-          alert(
-            "You have completed the test. To view your results, please proceed to payment"
-          );
-        }
+        //if (user.is_paid === 1) {
+        //setShowPayment(false);
+        response = await calculateCareerScoreAPI(
+          id.join(","),
+          result.join(",")
+        );
+        //} else {
+        //setShowPayment(true);
+        //alert(
+        ("You have completed the test. To view your results, please proceed to payment");
+        //);
+        //}
       } else if (testType === "Personality Test") {
         response = await calculateScoreAPI(id.join(","), result.join(","));
       }
@@ -117,8 +150,8 @@ const Result = () => {
       }));
 
       setBestCareer({
-        name: bestCareer.name,
-        careerDesc: bestCareer.careerDesc, // Make sure the description is being passed here
+        name: bestCareer?.name,
+        careerDesc: bestCareer?.careerDesc, // Make sure the description is being passed here
       });
 
       return response;
@@ -139,51 +172,57 @@ const Result = () => {
       ) : (
         <>
           {" "}
-          {testType === "Career Test" ? (
-            <>
-              <div className="flex flex-col">
-                <div className="font-roboto my-auto text-gray-800">
-                  {" "}
-                  <h1
-                    className="text-4xl font-bold text-center py-10
-               "
-                  >
-                    Career Test Results
-                  </h1>
-                  <div className="container">
-                    {" "}
-                    <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
-                      Hey there! Thanks for completing the Career Test. Let’s
-                      take a detailed, friendly look. Understanding these can
-                      help you choose a career path where you’ll truly thrive —
-                      with a good fit for your natural style, strengths, and
-                      even challenges.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </>
+          {testType === null ? (
+            <Landing />
           ) : (
             <>
-              {" "}
-              <div className="flex flex-col">
-                <div className="font-roboto my-auto text-gray-800">
-                  {" "}
-                  <h1 className="text-4xl font-bold text-center py-10 ">
-                    Personality Test Results
-                  </h1>
-                  <div className="container">
-                    {" "}
-                    <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
-                      Hey there! Thanks for completing the Personality Test.
-                      Now, let's take a deeper dive into a thoughtful and
-                      easy-to-understand breakdown of your unique traits, so you
-                      can better understand your strengths, preferences, and
-                      areas for growth.
-                    </p>
+              {testType === "Career Test" ? (
+                <>
+                  <div className="flex flex-col">
+                    <div className="font-roboto my-auto text-gray-800">
+                      {" "}
+                      <h1
+                        className="text-4xl font-bold text-center py-10
+               "
+                      >
+                        Career Test Results
+                      </h1>
+                      <div className="container">
+                        {" "}
+                        <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
+                          Hey there! Thanks for completing the Career Test.
+                          Let’s take a detailed, friendly look. Understanding
+                          these can help you choose a career path where you’ll
+                          truly thrive — with a good fit for your natural style,
+                          strengths, and even challenges.
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <div className="flex flex-col">
+                    <div className="font-roboto my-auto text-gray-800">
+                      {" "}
+                      <h1 className="text-4xl font-bold text-center py-10 ">
+                        Personality Test Results
+                      </h1>
+                      <div className="container">
+                        {" "}
+                        <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
+                          Hey there! Thanks for completing the Personality Test.
+                          Now, let's take a deeper dive into a thoughtful and
+                          easy-to-understand breakdown of your unique traits, so
+                          you can better understand your strengths, preferences,
+                          and areas for growth.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              )}
             </>
           )}
           <div className="container py-20">
@@ -218,10 +257,10 @@ const Result = () => {
               <div className=" py-5">
                 <div className="flex flex-row  py-5">
                   {" "}
-                  <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
+                  <p className="text-lg md:text-xl leading-[2] font-semibold px-30 font-roboto">
                     Openness{" "}
                   </p>
-                  <span className="text-gray-700 ml-auto">
+                  <span className="text-gray-700 ml-auto font-semibold">
                     {percentage.openness}%
                   </span>
                 </div>
@@ -260,7 +299,7 @@ const Result = () => {
                   <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
                     Conscientiousness{" "}
                   </p>
-                  <span className="text-gray-700 ml-auto">
+                  <span className="text-gray-700 ml-auto font-semibold">
                     {percentage.conscientiousness}%
                   </span>
                 </div>
@@ -297,7 +336,7 @@ const Result = () => {
                   <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
                     Extraversion{" "}
                   </p>
-                  <span className="text-gray-700 ml-auto">
+                  <span className="text-gray-700 ml-auto font-semibold">
                     {percentage.extraversion}%
                   </span>
                 </div>
@@ -321,7 +360,7 @@ const Result = () => {
                   ></div>
                 </div>
                 <div className="py-5">
-                  <p className="text-md/7 font-roboto leading-7">
+                  <p className="text-md/7 font-roboto leading-7 font-semibold">
                     {traitDesc.extraversion}
                   </p>
                 </div>
@@ -338,7 +377,7 @@ const Result = () => {
                   <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
                     Agreeableness{" "}
                   </p>
-                  <span className="text-gray-700 ml-auto">
+                  <span className="text-gray-700 ml-auto font-semibold">
                     {percentage.agreeableness}%
                   </span>
                 </div>
@@ -379,7 +418,7 @@ const Result = () => {
                   <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
                     Neuroticism{" "}
                   </p>
-                  <span className="text-gray-700 ml-auto">
+                  <span className="text-gray-700 ml-auto font-semibold">
                     {percentage.neuroticism}%
                   </span>
                 </div>

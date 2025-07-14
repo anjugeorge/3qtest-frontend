@@ -48,7 +48,8 @@ const Navbar = () => {
             )}
           </div>
           <div>
-            <a href="/">
+            <a href="/" className="flex">
+              <img src="/assets/favicon.ico" className="w-8" />
               <h1 className="text-2xl font-bold italic text-purple-950">
                 3QTest
               </h1>

@@ -7,6 +7,7 @@ import {
   getCareerQuestionsAPI,
   getProtectedData,
   getTestResultsAPI,
+  paymentAccess,
   saveResultsAPI,
   updateCompletedTestFieldAPI,
 } from "../../../api/apiService";
@@ -14,7 +15,7 @@ import Login from "../UserAuth/Login";
 import { AuthContext } from "../../../context/AuthContext";
 import Payment from "../UserAuth/Payment";
 const CareerAssessment = () => {
-  const { isLoggedIn, user } = useContext(AuthContext);
+  const { isLoggedIn, logout } = useContext(AuthContext);
   const [selectedValue, setSelectedValue] = React.useState("");
   const [questionId, setQuestionId] = useState([]);
   const [questions, setQuestions] = useState([]);
@@ -28,28 +29,48 @@ const CareerAssessment = () => {
   const navigate = useNavigate();
 
   const options = radioOptions(selectedValue);
-
+  console.log(isLoggedIn);
   useEffect(() => {
     async function getTestResults() {
       try {
         if (isLoggedIn) {
           const response = await getTestResultsAPI("Career Test");
-          if (user.is_paid === 0 && response.result == null) {
-            const response = await getCareerQuestionsAPI();
-            setQuestionId(response.id);
-            setQuestions(response.question);
-          } else {
-            navigate(`/results`, {
-              state: { testType: "Career Test" },
-            });
-          }
+          //console.log("response", response);
+          //else {
+          navigate(`/results`, {
+            state: { testType: "Career Test" },
+          });
+          //}
         }
       } catch (error) {
-        console.log("Error: ", error);
+        const isLoggedInOnce = sessionStorage.getItem("isLoggedInOnce");
+
+        if (
+          error.response?.status === 401 &&
+          error.response?.data?.TokenExpired &&
+          isLoggedInOnce === "true"
+        ) {
+          sessionStorage.setItem("TokenExpired", "true");
+          alert(
+            error.response.data.message ||
+              "Session expired. Please log in again."
+          );
+          sessionStorage.removeItem("isLoggedInOnce");
+          window.location.href = "/";
+
+          return;
+        }
+
+        if (error.status === 403) {
+          const response = await getCareerQuestionsAPI();
+          setQuestionId(response.id);
+          setQuestions(response.question);
+        }
+        console.log("Error Check: ", error.status);
       }
     }
     getTestResults();
-  }, []);
+  }, [isLoggedIn]);
 
   function closePaymentModal() {
     setIsPaymentModalOpen(!isPaymentModalOpen);
@@ -61,6 +82,27 @@ const CareerAssessment = () => {
   };
 
   async function gotoNextQuestion() {
+    try {
+      await getProtectedData();
+    } catch (error) {
+      const isLoggedInOnce = sessionStorage.getItem("isLoggedInOnce");
+
+      if (
+        error.response?.status === 401 &&
+        error.response?.data?.TokenExpired &&
+        isLoggedInOnce === "true"
+      ) {
+        sessionStorage.setItem("TokenExpired", "true");
+
+        alert(
+          error.response.data.message || "Session expired. Please log in again."
+        );
+        sessionStorage.removeItem("isLoggedInOnce");
+        window.location.href = "/";
+      }
+      return;
+      //console.log("Error:", error);
+    }
     const updatedResults = [...result, selectedValue];
     const updatedIds = [...id, questionId[currentQuestionId]];
     if (selectedValue != "") {
@@ -84,7 +126,17 @@ const CareerAssessment = () => {
         const response = await updateCompletedTestFieldAPI();
 
         if (response) {
+          //const paymentAccessResponse = await paymentAccess();
+          //console.log(paymentAccessResponse);
+          //if (paymentAccessResponse.Paid) {
+          //alert("You have already paid for the test");
           setShowPayment(true);
+          //navigate("/results", {
+          //tate: { testType: "Career Test" },
+          //});
+          // } else {
+          //setShowPayment(true);
+          //}
         }
       }
     } else {
@@ -141,7 +193,7 @@ const CareerAssessment = () => {
           </div>
         </div>
       </form>
-      {showPayment && <Payment closePaymentModal={closePaymentModal} />}
+      {showPayment && <Payment />}
     </>
   ) : (
     <Login />

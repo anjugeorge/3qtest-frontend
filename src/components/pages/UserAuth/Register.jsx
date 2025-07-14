@@ -86,12 +86,21 @@ const Register = () => {
       });
       closeCreateAccount();
     } catch (err) {
-      alert("Error creating account. Please try again.");
-      setRegister({
-        fullName: "",
-        email: "",
-        password: "",
-      });
+      if (err.status === 409) {
+        alert("Eamil already registered");
+        setRegister({
+          fullName: "",
+          email: "",
+          password: "",
+        });
+      } else {
+        alert("Error creating account. Please try again.");
+        setRegister({
+          fullName: "",
+          email: "",
+          password: "",
+        });
+      }
 
       console.log("Error", err);
     }
@@ -136,7 +145,7 @@ const Register = () => {
                 </button>
               </div>
               <div className="p-4 md:p-5">
-                <form className="space-y-4">
+                <form className="space-y-4" autoComplete="on">
                   <div>
                     <label
                       for="fName"
@@ -172,6 +181,7 @@ const Register = () => {
                       required
                       value={register.email}
                       onChange={handleChange}
+                      autoComplete="email"
                     />
                   </div>
                   <div>
@@ -191,6 +201,7 @@ const Register = () => {
                       minLength={8}
                       value={register.password}
                       onChange={handleChange}
+                      autoComplete="new-password"
                     />
                     <button
                       className="absolute right-8 top-[19rem]"

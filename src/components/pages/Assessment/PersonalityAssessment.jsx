@@ -12,7 +12,7 @@ import { radioOptions } from "../../../constants/radioOptions";
 import PersonalityAssessmentHero from "./PersonalityAssessmentHero";
 import { AuthContext } from "../../../context/AuthContext";
 const PersonalityAssessment = () => {
-  const { isLoggedIn } = useContext(AuthContext);
+  const { isLoggedIn, logout } = useContext(AuthContext);
   const [selectedValue, setSelectedValue] = useState("");
   const [questionId, setQuestionId] = useState([]);
   const [questions, setQuestions] = useState([]);
@@ -36,7 +36,6 @@ const PersonalityAssessment = () => {
     agreeableness: "",
     neuroticism: "",
   });
-
   const navigate = useNavigate();
 
   const options = radioOptions(selectedValue);
@@ -66,7 +65,24 @@ const PersonalityAssessment = () => {
           }
         }
       } catch (error) {
-        console.log("Error: ", error);
+        const isLoggedInOnce = sessionStorage.getItem("isLoggedInOnce");
+
+        if (
+          error.response?.status === 401 &&
+          error.response?.data?.TokenExpired &&
+          isLoggedInOnce === "true"
+        ) {
+          sessionStorage.setItem("TokenExpired", "true");
+
+          alert(
+            error.response.data.message ||
+              "Session expired. Please log in again."
+          );
+          sessionStorage.removeItem("isLoggedInOnce");
+          window.location.href = "/";
+        }
+        return;
+        //console.log("Error:", error);
       }
     }
     getTestResults();
@@ -94,7 +110,28 @@ const PersonalityAssessment = () => {
     }
   }
 
-  function gotoNextQuestion() {
+  async function gotoNextQuestion() {
+    try {
+      await getProtectedData();
+    } catch (error) {
+      const isLoggedInOnce = sessionStorage.getItem("isLoggedInOnce");
+
+      if (
+        error.response?.status === 401 &&
+        error.response?.data?.TokenExpired &&
+        isLoggedInOnce === "true"
+      ) {
+        sessionStorage.setItem("TokenExpired", "true");
+
+        alert(
+          error.response.data.message || "Session expired. Please log in again."
+        );
+        sessionStorage.removeItem("isLoggedInOnce");
+        window.location.href = "/";
+      }
+      return;
+      //console.log("Error:", error);
+    }
     const updatedResults = [...result, selectedValue];
     const updatedIds = [...id, questionId[currentQuestionId]];
     if (selectedValue != "") {
