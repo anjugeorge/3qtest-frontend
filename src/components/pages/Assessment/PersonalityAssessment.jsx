@@ -11,6 +11,8 @@ import {
 import { radioOptions } from "../../../constants/radioOptions";
 import PersonalityAssessmentHero from "./PersonalityAssessmentHero";
 import { AuthContext } from "../../../context/AuthContext";
+import TermsAndConditions from "../Terms-Conditions/TermsAndConditions";
+import Disclaimer from "../Terms-Conditions/Disclaimer";
 const PersonalityAssessment = () => {
   const { isLoggedIn, logout } = useContext(AuthContext);
   const [selectedValue, setSelectedValue] = useState("");
@@ -36,6 +38,11 @@ const PersonalityAssessment = () => {
     agreeableness: "",
     neuroticism: "",
   });
+  const [isDisclaimerOpen, setIsDisclaimerOpen] = useState(true);
+
+  function closeDisclaimerModal() {
+    setIsDisclaimerOpen(!isDisclaimerOpen);
+  }
   const navigate = useNavigate();
 
   const options = radioOptions(selectedValue);

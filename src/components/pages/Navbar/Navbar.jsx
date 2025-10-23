@@ -51,7 +51,7 @@ const Navbar = () => {
             <a href="/" className="flex">
               <img src="/assets/favicon.ico" className="w-8" />
               <h1 className="text-2xl font-bold italic text-purple-950">
-                3QTest
+                3QTests
               </h1>
             </a>
           </div>
@@ -105,7 +105,7 @@ const Navbar = () => {
                     }
                   }}
                 >
-                  Personality Test
+                  Personality Insights
                 </a>
               </li>
               <li>
@@ -125,7 +125,7 @@ const Navbar = () => {
                     }
                   }}
                 >
-                  Career Test
+                  Career Interests
                 </a>
               </li>
             </ul>

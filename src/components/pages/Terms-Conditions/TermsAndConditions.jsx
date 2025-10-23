@@ -41,14 +41,47 @@ const TermsAndConditions = ({ closeModal }) => {
             </div>
             <div className="p-4 md:p-5 text-sm text-gray-800">
               <p className=" font-roboto leading-7 py-1 px-3 text-center md:text-start">
-                <strong>Disclaimer:</strong> The 3QTest platform offers
-                personality and career assessments solely for informational and
-                entertainment purposes. These assessments and their results are
-                not intended to diagnose, treat, or serve as a substitute for
-                professional psychological or career advice. Any decisions made
-                based on the results are entirely the user's responsibility. For
-                important personal, educational, or career-related decisions, we
-                strongly encourage consulting qualified professionals.
+                <strong>Disclaimer:</strong> The 3QTest platform provides
+                personality and career interest explorers for educational and
+                informational purposes only.
+                <div>
+                  {" "}
+                  <strong>Important Disclaimers:</strong>
+                </div>
+                <ul className="list-disc">
+                  <li>
+                    These tools are NOT professional psychological assessments
+                    or career counseling{" "}
+                  </li>
+                  <li>
+                    Results are AI-generated and have not been validated by
+                    licensed professionals
+                  </li>
+                  <li>
+                    This is NOT a substitute for advice from qualified career
+                    counselors or psychologists
+                  </li>
+                  <li>
+                    {" "}
+                    We make no guarantees about the accuracy or completeness of
+                    results
+                  </li>
+                  <li>
+                    Users are solely responsible for any decisions made based on
+                    these results
+                  </li>
+                  <li>
+                    For major life, career, or educational decisions, please
+                    consult licensed professionals
+                  </li>
+                </ul>
+                <div className="text-center">
+                  <strong>
+                    {" "}
+                    By using this platform, you acknowledge and accept these
+                    limitations.
+                  </strong>
+                </div>
               </p>
               <p className=" font-roboto leading-7 py-1 px-3 text-center md:text-start">
                 <strong>Privacy Policy:</strong> At 3QTest, your privacy is

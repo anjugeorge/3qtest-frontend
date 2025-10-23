@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Mail, Phone, MapPin } from "lucide-react";
+import { Mail, Phone, MapPin, Underline } from "lucide-react";
 import ContactUs from "../ContactUs/ContactUs";
 import TermsAndConditions from "../Terms-Conditions/TermsAndConditions";
 const NavbarMenu = [
@@ -36,10 +36,10 @@ const Footer = () => {
             <div className="lg:mx-auto ">
               <a href="/" className="flex space-x-2 py-4">
                 <img src="/assets/favicon.ico" className="w-8" />
-                <h1 className="text-2xl font-bold italic ">3QTest</h1>
+                <h1 className="text-2xl font-bold italic ">3QTests</h1>
               </a>
               <p className=" text-sm/7 text-start text-gray-300">
-                3QTest is a Canadian-based company that helps you find the best
+                3QTests is a Canadian-based company that helps you find the best
                 career choice for yourself based on your personality traits.We
                 want to help people find their passions and achieve their
                 dreams!
@@ -127,7 +127,16 @@ const Footer = () => {
           </div>
           <div className=" text-gray-300 text-sm text-center mt-5">
             <p className=" mt-5">
-              © {new Date().getFullYear()} 3QTest by APSS. All rights reserved.
+              © {new Date().getFullYear()} 3QTest by{" "}
+              <a
+                href="https://apssorg.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ textDecoration: "underline", color: "pink" }}
+              >
+                APSS
+              </a>
+              . All rights reserved.
             </p>
           </div>
         </div>
