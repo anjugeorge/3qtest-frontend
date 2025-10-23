@@ -127,7 +127,7 @@ const Footer = () => {
           </div>
           <div className=" text-gray-300 text-sm text-center mt-5">
             <p className=" mt-5">
-              © {new Date().getFullYear()} 3QTest by{" "}
+              © {new Date().getFullYear()} 3QTests by{" "}
               <a
                 href="https://apssorg.com/"
                 target="_blank"

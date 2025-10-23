@@ -5,8 +5,8 @@ import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 const personalityTestFeatures = [
   {
     id: 1,
-    title: "Free Personality Test",
-    desc: `Get valuable insights into your personality traits and how they relate to your career choices with our free 3QTest personality test.`,
+    title: "Free Personality Insight",
+    desc: `Get valuable insights into your personality traits and how they relate to your career choices with our free 3QTests personality insight.`,
   },
   {
     id: 2,
@@ -23,7 +23,7 @@ const personalityTestFeatures = [
 const careerTestFeatures = [
   {
     id: 1,
-    title: "Career Assessment",
+    title: "Career Interests",
     desc: `Identify your strengths, interests, and ideal job paths.`,
   },
   {
@@ -33,8 +33,8 @@ const careerTestFeatures = [
   },
   {
     id: 3,
-    title: "Personalized Assessment Results",
-    desc: `Receive personalized insights based on your assessment results.`,
+    title: "Personalized Results",
+    desc: `Receive personalized insights based on your results.`,
   },
 ];
 const TestPage = () => {
@@ -50,7 +50,7 @@ const TestPage = () => {
           </div>
           <div className="my-auto">
             <h1 className="text-3xl font-roboto font-bold text-center">
-              Personality Test
+              Personality Insights
             </h1>
             <p className="font-roboto leading-7 py-5 px-5 text-center md:text-start">
               Understanding your personality is key when exploring new career
@@ -58,10 +58,10 @@ const TestPage = () => {
               strengths, ensuring a more fulfilling and successful journey.
               Whether you’re considering a career change or assessing your
               current job, knowing your personality type can provide valuable
-              insights. Take the free 3QTest personality test today to discover
-              more about yourself and receive an in-depth results. Registered
-              users can save their reports for future. For a more detailed
-              career analysis, try the 3QTest for a small fee.
+              insights. Take the free 3QTests personality insight today to
+              discover more about yourself and receive an in-depth results.
+              Registered users can save their reports for future. For a more
+              detailed career analysis, try the 3QTests for a small fee.
             </p>
           </div>
         </div>
@@ -100,11 +100,11 @@ const TestPage = () => {
           </div>
           <div className="my-auto">
             <h1 className="text-3xl font-roboto font-bold text-center">
-              Career Test
+              Career Interests
             </h1>
             <p className="font-roboto leading-7 py-5 px-5 text-center md:text-start">
               Looking to start your career but unsure where to begin? Our career
-              assessment is designed to help you identify your strengths,
+              interests is designed to help you identify your strengths,
               interests, and ideal work environments, bringing you one step
               closer to finding your dream job. For just $9.99, you’ll receive a
               personalized report designed to help you understand your potential

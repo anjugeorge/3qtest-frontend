@@ -20,7 +20,7 @@ const Hero = () => {
           </h1>
           <p className="text-2xl md:text-3xl leading-loose md:w-1/2 text-center px-5 text-slate-800 ">
             Seek your reflection and head straight to the door of success with
-            3Q Test
+            3QTests
           </p>
           {/*<a href="/assessment">
             <button className="bg-purple-900 hover:bg-purple-950  w-48 h-10 text-white text-[14px] font-bold rounded-lg">

@@ -17,7 +17,7 @@ const CareerAssessmentHero = () => {
           {" "}
           <h1 className="text-4xl font-bold text-center py-10 text-slate-800 ">
             {" "}
-            Career Test
+            Career Interests
           </h1>
           <div className="container">
             {" "}

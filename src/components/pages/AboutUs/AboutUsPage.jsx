@@ -28,7 +28,7 @@ const AboutUsPage = () => {
             Our Mission
           </h1>
           <p className="font-roboto leading-7 py-5 px-5 text-start">
-            At 3QTest, our mission is to empower individuals to make confident
+            At 3QTests, our mission is to empower individuals to make confident
             career decisions by providing them with deep insights into their
             unique personality traits and potential career matches. We believe
             that when people work in fields that align with their natural
@@ -39,9 +39,9 @@ const AboutUsPage = () => {
             regardless of their stage in life or professional background.
           </p>
           <p className="font-roboto leading-7 py-5 px-5 text-start">
-            3QTest is a team of dedicated professionals who are passionate about
-            helping others find the best career choices for them. Based in
-            Canada, 3QTest provides accurate and insightful personality
+            3QTests is a team of dedicated professionals who are passionate
+            about helping others find the best career choices for them. Based in
+            Canada, 3QTests provides accurate and insightful personality
             assessments that help people identify their unique strengths and
             weaknesses. With this information, individuals can make more
             informed decisions about their careers and future prospects.

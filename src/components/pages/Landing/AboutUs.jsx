@@ -13,7 +13,7 @@ const AboutUs = () => {
             About Us
           </h1>
           <p className="font-roboto leading-7 py-5 px-5 text-center md:text-start">
-            3QTest is a Canadian-based company that helps you find the best
+            3QTests is a Canadian-based company that helps you find the best
             career choice for yourself based on your personality traits. We
             believe that everyone has their own unique set of skills and
             abilities, and that it's important to find a career that aligns with

@@ -8,7 +8,7 @@ const TestHero = () => {
           {" "}
           <h1 className="text-4xl font-bold text-center py-10 text-slate-900">
             {" "}
-            Our Assessments
+            Discover Yourself
           </h1>
           <p className="text-xl md:text-2xl leading-loose md:w-1/2 text-center mx-auto px-5 font-roboto text-slate-800">
             Do you want to discover yourself and determine where you best fit

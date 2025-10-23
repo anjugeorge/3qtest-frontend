@@ -12,12 +12,12 @@ const Test = () => {
         {" "}
         <div className="container">
           <h1 className="text-3xl font-roboto font-semibold text-center">
-            Our Assessments
+            Discover Yourself
           </h1>
 
           <p className="font-roboto leading-7 py-5 px-5 text-center md:text-start">
             For atleast once in life you must have wished for a sure-fire way to
-            figure out what you wanted to do with your life. Our 3Qtest
+            figure out what you wanted to do with your life. Our 3QTests
             assessments will help pinpoint your interests and strengths so you
             can focus your career search. With our assessments, making a
             decision about your future has never been easier.
@@ -29,7 +29,7 @@ const Test = () => {
                 {" "}
                 <img src="/assets/personality.png" className="w-16 h-16" />
                 <div class="font-bold text-xl ml-3  text-start  my-auto">
-                  Personality Test
+                  Personality Insights
                 </div>
               </div>
 
@@ -59,7 +59,7 @@ const Test = () => {
                 {" "}
                 <img src="/assets/career.png" className="w-16 h-16" />
                 <div class="font-bold text-xl ml-3  text-start  my-auto">
-                  Career Test
+                  Career Interests
                 </div>
               </div>
               <div class="px-6 py-4">
