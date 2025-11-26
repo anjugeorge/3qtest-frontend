@@ -27,7 +27,7 @@ const AboutUsPage = () => {
           <h1 className="text-3xl font-roboto font-bold text-center">
             Our Mission
           </h1>
-          <p className="font-roboto leading-7 py-5 px-5 text-start">
+          <p className="font-roboto leading-7 py-5 px-5 text-justify">
             At 3QTests, our mission is to empower individuals to make confident
             career decisions by providing them with deep insights into their
             unique personality traits and potential career matches. We believe
@@ -38,7 +38,7 @@ const AboutUsPage = () => {
             assessment accessible, accurate, and actionable for everyone,
             regardless of their stage in life or professional background.
           </p>
-          <p className="font-roboto leading-7 py-5 px-5 text-start">
+          <p className="font-roboto leading-7 py-5 px-5 text-justify">
             3QTests is a team of dedicated professionals who are passionate
             about helping others find the best career choices for them. Based in
             Canada, 3QTests provides accurate and insightful personality
@@ -67,7 +67,9 @@ const AboutUsPage = () => {
                       {content.title}
                     </h5>
                   </div>
-                  <p className="block  pb-3 text-sm/7">{content.desc}</p>
+                  <p className="block  pb-3 text-sm/7 text-justify">
+                    {content.desc}
+                  </p>
                 </div>
               ))}
             </div>

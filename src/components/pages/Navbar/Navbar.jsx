@@ -168,7 +168,7 @@ const Navbar = () => {
         <div>
           {menu && (
             <div>
-              <div className="absolute start-0 top-16 bg-white  w-full max-h-full z-20 text-white font-bold ">
+              <div className="absolute start-0 top-16 bg-white  w-full max-h-full z-20 text-white font-bold py-5">
                 <ul className="flex flex-col flex-nowrap justify-center gap-4 font-roboto text-slate-800 text-[14px]">
                   <li>
                     <a
@@ -218,7 +218,7 @@ const Navbar = () => {
                         }
                       }}
                     >
-                      <li className="block">Personality Test</li>
+                      <li className="block"> Personality Insights</li>
                     </a>
                   </li>
                   <li>
@@ -238,7 +238,7 @@ const Navbar = () => {
                         }
                       }}
                     >
-                      <li className="block">Career Test</li>
+                      <li className="block"> Career Interests</li>
                     </a>
                   </li>
                 </ul>

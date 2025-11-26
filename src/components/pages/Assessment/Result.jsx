@@ -9,7 +9,7 @@ import {
 import { AuthContext } from "../../../context/AuthContext";
 import Payment from "../UserAuth/Payment";
 import Landing from "../Landing/Landing";
-import { Bar, Pie } from "react-chartjs-2";
+import { Bar, Bubble, Pie, PolarArea } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,6 +18,11 @@ import {
   Title,
   Tooltip,
   Legend,
+  RadialLinearScale,
+  ArcElement,
+  BubbleController,
+  PointElement,
+  LineElement, // <-- for Line chart
 } from "chart.js";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -26,14 +31,35 @@ import axios from "axios";
 import { IoIosSend } from "react-icons/io";
 import Loading from "../Loading/loading";
 import Disclaimer from "../Terms-Conditions/Disclaimer";
-
+import { Fa1, FaBrain } from "react-icons/fa6";
+import { FaLightbulb } from "react-icons/fa";
+import { FaEye } from "react-icons/fa";
+import { FaCompass } from "react-icons/fa";
+import { FaBalanceScale } from "react-icons/fa";
+import { IoAlertCircle } from "react-icons/io5";
+import { FaHeart } from "react-icons/fa";
+import { TbMoodSadFilled } from "react-icons/tb";
+import { MdAccessTimeFilled } from "react-icons/md";
+import { MdHexagon } from "react-icons/md";
+import { HiMiniArrowTrendingUp } from "react-icons/hi2";
+import { GoGraph } from "react-icons/go";
+import { FaMountain } from "react-icons/fa";
+import { FaBuilding } from "react-icons/fa6";
+import { FaHammer } from "react-icons/fa6";
+import { FaSearch } from "react-icons/fa";
+import { FaHandsHelping } from "react-icons/fa";
+import { LuClipboardPenLine } from "react-icons/lu";
+import { RiTeamFill } from "react-icons/ri";
 ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
+  RadialLinearScale,
+  ArcElement,
   Tooltip,
-  Legend
+  Legend,
+  LinearScale,
+  BubbleController,
+  PointElement,
+  LineElement, // <-- for Line chart
+  CategoryScale
 );
 
 const options = {
@@ -49,14 +75,51 @@ const options = {
   },
 };
 
+const title = {
+  R: "The Ultimate Doer",
+  I: "The Analytical Genius",
+  A: "The Master Creator",
+  S: "The Heartfelt Helper",
+  E: "The Charismatic Leader",
+  C: "The Chief Organizer",
+};
+
+const icons = {
+  R: FaHammer,
+  I: FaSearch,
+  A: FaLightbulb,
+  S: FaHandsHelping,
+  E: RiTeamFill,
+  C: LuClipboardPenLine,
+};
+
+const colorMap = {
+  R: "#819A91",
+
+  I: "#687FE5",
+  A: "#DEAA79",
+  S: "#8E7DBE",
+  E: "#AF3E3E",
+  C: "#a23eaf",
+};
+
+const colorMapBg = {
+  R: "#D3DCD8",
+  I: "#D6DDFB",
+  A: "#F4E5D2",
+  S: "#DDD7EE",
+  E: "#EBCFCF",
+  C: "#EACFEE",
+};
+
 const Result = () => {
   const { user } = useContext(AuthContext);
   const [traitDesc, setTraitDesc] = React.useState({
-    openness: `Openness trait reflects the extent to which a person is open-minded, imaginative, curious, and willing to try new things. People who score high on openness tend to be creative, curious, and eager to explore new ideas and experiences. They enjoy novel experiences and often think abstractly. In contrast, individuals with lower openness may prefer routine, tradition, and familiarity.`,
-    conscientiousness: `Conscientiousness refers to an individual’s degree of self-discipline, organization, and goal-oriented behavior. People who score high on conscientiousness are typically reliable, responsible, and efficient, with a strong attention to detail. They are good at managing tasks and achieving goals. Those with lower conscientiousness may be more spontaneous, flexible, and sometimes disorganized.`,
-    extraversion: `Extraversion is characterized by how outgoing, energetic, and sociable a person is. Extraverts enjoy interacting with others, are often talkative, and feel energized by social situations. They tend to seek excitement and stimulation. On the other hand, introverts, who score lower in extraversion, tend to feel more comfortable in solitude or small, intimate settings.`,
-    agreeableness: `Agreeableness refers to a person’s tendency to be compassionate, cooperative, and empathetic toward others. Individuals with high agreeableness are typically friendly, helpful, and considerate, often striving for harmony in relationships. Those with lower agreeableness may be more competitive, critical, or less concerned with others’ feelings.`,
-    neuroticism: `Neuroticism reflects the tendency to experience negative emotions such as anxiety, stress, and emotional instability. Individuals who score high in neuroticism may be more prone to worrying, feeling anxious, and experiencing mood swings. Those who score lower in neuroticism tend to be more emotionally stable, calm, and resilient in stressful situations.`,
+    openness: `Openness refers to a person's ability to think abstractly, be imaginative and have a wide range of interests. Openness is an important trait because it affects how we view the world and handle daily tasks. It makes sense that people who can think outside of the box would do better academically and in their careers, because they can think of ways to solve problems and build ideas that others may not have thought of.`,
+    conscientiousness: `Conscientiousness reflects a person\'s ability to control their impulses and manage emotions, habits and behaviours effectively. It is perceived as a personality trait associated with success in many different aspects of everyday life. A recent study has demonstrated that there is a link between conscientiousness and the ability to succeed in certain careers. Researchers found that individuals who rank highly on this personality trait are more likely to find employment, earn high salaries and ascend the career ladder quickly.`,
+    extraversion: `Extraversion is the state of mainly relying on external sources of satisfaction and stimulation. People who are extraverted, enjoy getting energized by social gatherings, romantic relationships and interactions with other people. They possess a great deal of warmth, enthusiasm, and self-disclosure in their dealings with others. The Extraverted person finds that engagement in the external world helps to charge their internal batteries.`,
+    agreeableness: `Agreeableness is considered to be one of the most desirable personality traits, because people who are high on this dimension tend to possess positive character traits such as honesty, integrity and altruism. Because agreeable people place a high value on getting along with others, they tend to be popular and easy to get along with.`,
+    neuroticism: `Neuroticism relates to emotional stability and impulse control. It contributes to individual differences in emotionality or moodiness. Neuroticism can be characterized by such traits as anxiety , anger , depressive tendencies, and guilt . It is generally viewed as a negative trait , though there are some individuals who are high in this trait and do not experience any distress. Neuroticism is a predictor of psychological disorders such as anxiety, depressive, bipolar or addictive disorders. It has been found that there is a link between neuroticism and physical arousal in the body.`,
   });
 
   const [careerTypeDesc, setCareerTypeDesc] = React.useState({
@@ -100,6 +163,8 @@ const Result = () => {
     fullName: "",
     fieldOfStudy: "",
     career: "",
+    matchedCareers: [],
+    primaryCareerMatch: [],
     careerDesc: "",
     actionPlan: "",
     todayRelevance: "",
@@ -250,6 +315,8 @@ const Result = () => {
         fullName: bestCareer?.fullName,
         fieldOfStudy: bestCareer?.fieldOfStudy,
         career: bestCareer?.career,
+        matchedCareers: bestCareer?.matchedCareers,
+        primaryCareerMatch: bestCareer?.primaryCareerMatch,
         careerDesc: bestCareer?.careerDesc,
         actionPlan: bestCareer?.actionPlan,
         todayRelevance: bestCareer?.todayRelevance,
@@ -269,9 +336,9 @@ const Result = () => {
     navigate("/");
   }
 
-  function MyBarChart({ bestCareer }) {
+  function MyBubbleChart({ percentage }) {
     return (
-      <Bar
+      <Bubble
         data={{
           labels: [
             "Realistic",
@@ -279,7 +346,44 @@ const Result = () => {
             "Artistic",
             "Social",
             "Enterprising",
-            "Conventional",
+          ],
+          datasets: [
+            {
+              label: "Scores",
+              data: [
+                { x: 1, y: percentage.openness ?? 0, r: 10 },
+                { x: 2, y: percentage.conscientiousness ?? 0, r: 10 },
+                { x: 3, y: percentage.extraversion ?? 0, r: 10 },
+                { x: 4, y: percentage.agreeableness ?? 0, r: 10 },
+                { x: 5, y: percentage.neuroticism ?? 0, r: 10 },
+              ],
+              backgroundColor: [
+                "#819A91",
+                "#687FE5",
+                "#DEAA79",
+                "#8E7DBE",
+                "#AF3E3E",
+              ],
+              barThickness: 25,
+            },
+          ],
+        }}
+        options={options}
+      />
+    );
+  }
+
+  function MyPolarAreaChart({ bestCareer }) {
+    return (
+      <PolarArea
+        data={{
+          labels: [
+            "Practical", // Realistic
+            "Analytical", // Investigative
+            "Creative", // Artistic
+            "Social", // Social
+            "Ambitious", // Enterprising
+            "Organized", // Conventional
           ],
           datasets: [
             {
@@ -293,17 +397,31 @@ const Result = () => {
                 bestCareer.conventional.percentage,
               ],
               backgroundColor: [
-                "#819A91",
-                "#687FE5",
-                "#DEAA79",
-                "#8E7DBE",
-                "#AF3E3E",
+                "#65786F", // Realistic – slightly lighter
+                "#5474E0", // Investigative – slightly lighter
+                "#C9986A", // Artistic – slightly lighter
+                "#7F6FBF", // Social – slightly lighter
+                "#A63D3D", // Enterprising – slightly lighter
+                "#843FA3", // Conventional – slightly lighter
               ],
-              barThickness: 75,
             },
           ],
         }}
-        options={options}
+        options={{
+          responsive: true,
+          plugins: {
+            legend: {
+              position: "bottom",
+            },
+          },
+          scales: {
+            r: {
+              ticks: {
+                beginAtZero: true,
+              },
+            },
+          },
+        }}
       />
     );
   }
@@ -312,6 +430,7 @@ const Result = () => {
 
   function generatePdfAndSendEmail() {
     const element = document.getElementById("forPDF");
+
     const header = document.createElement("div");
     header.innerHTML = ` <div style="display:flex; margin:10px;">
               <img src="/assets/favicon.ico" style="width:32px; height:32px" />
@@ -320,17 +439,34 @@ const Result = () => {
               </h1>
               </div>
               <div style="margin-bottom:10px;">
-              <h1 style="font-size:15px; font-weight:bold; font-style:italic; color:#hhhhhh;">
+              <h1 style="font-size:16px; font-weight:bold; font-style:italic; color:#hhhhhh;">
                 Career Assessment Report
               </h1>
               <div/>
               `;
-    header.appendChild(element.cloneNode(true));
+    const clone = element.cloneNode(true);
+    const canvas = element.querySelector("canvas");
+    const clonedCanvas = clone.querySelector("canvas");
+    if (canvas) {
+      const img = document.createElement("img");
+      img.src = canvas.toDataURL("image/png");
+      img.style.width = canvas.style.width || canvas.width + "px";
+      img.style.height = canvas.style.height || canvas.height + "px";
+      clonedCanvas.replaceWith(img);
+    }
+
+    header.appendChild(clone);
+    header.querySelectorAll("*").forEach((el) => {
+      el.style.fontSize = "16px";
+    });
     const options = {
-      margin: [5, 10, 5, 10],
+      margin: [5, 5, 5, 5],
       filename: "Career Assessment Report.pdf",
-      image: { type: "png", quality: 1 },
-      html2canvas: { scale: 1 },
+
+      image: { type: "jpeg", quality: 0.8 },
+      html2canvas: {
+        scale: 3,
+      },
       jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
     };
 
@@ -382,7 +518,7 @@ const Result = () => {
               {testType === "Career Test" ? (
                 <>
                   <div className="flex flex-col">
-                    <div className="font-roboto my-auto text-gray-800">
+                    <div className="font-roboto my-auto text-purple-950">
                       {" "}
                       <h1
                         className="text-4xl font-bold text-center py-10
@@ -391,56 +527,13 @@ const Result = () => {
                         Career Interests Results
                       </h1>
                       <div className="container">
-                        {" "}
-                        <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
+                        <p className="text-lg md:text-md/7 leading-7 text-center mx-auto px-30 font-roboto text-justify">
                           Hey there! Thanks for completing the Career Test.
                           Let’s take a detailed, friendly look. Understanding
                           these can help you choose a career path where you’ll
                           truly thrive — with a good fit for your natural style,
                           strengths, and even challenges.
                         </p>
-                        <div
-                          className="text-sm  leading-loose text-center mx-auto px-30 "
-                          style={{
-                            background: "#fff3cd",
-                            borderLeft: "10px solid #ffc107",
-                            padding: "15px",
-                            margin: "25px 25px",
-                            borderRadius: "4px",
-                            color: "#474747",
-                          }}
-                        >
-                          {" "}
-                          <p>
-                            <strong>
-                              Important:This is an educational exploration tool.
-                              Results are AI-generated and not professionally
-                              validated. Not a substitute for professional
-                              assessment.
-                            </strong>{" "}
-                          </p>
-                          <div className="text-center pt-2 text-sm text-[#474747]">
-                            <p>
-                              <strong>
-                                Please read this disclaimer before taking the
-                                test:
-                              </strong>
-                            </p>
-                            <a
-                              href="#"
-                              style={{ textDecoration: "underline" }}
-                              onClick={(e) => {
-                                e.preventDefault;
-                                openModal();
-                              }}
-                            >
-                              <strong>Disclaimer</strong>
-                            </a>
-                            {isModalOpen && (
-                              <Disclaimer closeModal={closeModal} />
-                            )}
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -487,62 +580,20 @@ const Result = () => {
                 <>
                   {" "}
                   <div className="flex flex-col">
-                    <div className="font-roboto my-auto text-gray-800">
+                    <div className="font-roboto my-auto text-purple-950">
                       {" "}
-                      <h1 className="text-4xl font-bold text-center ">
+                      <h1 className="text-4xl  font-bold text-center ">
                         Personality Insights Results
                       </h1>
                       <div className="container py-20">
                         {" "}
-                        <p className="text-lg md:text-xl leading-[2] text-center mx-auto px-30 font-roboto">
+                        <p className="text-lg md:text-md/7 leading-7 text-center mx-auto px-30 font-roboto">
                           Hey there! Thanks for completing the Personality Test.
                           Now, let's take a deeper dive into a thoughtful and
                           easy-to-understand breakdown of your unique traits, so
                           you can better understand your strengths, preferences,
                           and areas for growth.
                         </p>
-                        <div
-                          className=" text-sm  leading-loose text-center mx-auto px-30 "
-                          style={{
-                            background: "#fff3cd",
-                            borderLeft: "10px solid #ffc107",
-                            padding: "15px",
-                            margin: "25px 25px",
-                            borderRadius: "4px",
-                            color: "#474747",
-                          }}
-                        >
-                          {" "}
-                          <p>
-                            <strong>
-                              Important:This is an educational exploration tool.
-                              Results are AI-generated and not professionally
-                              validated. Not a substitute for professional
-                              assessment.
-                            </strong>{" "}
-                          </p>
-                          <div className="text-center pt-2 text-sm text-[#474747]">
-                            <p>
-                              <strong>
-                                Please read this disclaimer before taking the
-                                test:
-                              </strong>
-                            </p>
-                            <a
-                              href="#"
-                              style={{ textDecoration: "underline" }}
-                              onClick={(e) => {
-                                e.preventDefault;
-                                openModal();
-                              }}
-                            >
-                              <strong>Disclaimer</strong>
-                            </a>
-                            {isModalOpen && (
-                              <Disclaimer closeModal={closeModal} />
-                            )}
-                          </div>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -560,368 +611,303 @@ const Result = () => {
               <div className="pt-2">
                 <div className="flex flex-col pt-3">
                   {" "}
-                  <p className="text-md/7 font-roboto leading-7 py-2">
-                    <strong>Hey, {user?.name || "Guest"}!</strong>
-                  </p>
                   {testType === "Career Test" ? (
                     <>
-                      <p className="text-md/7 font-roboto leading-7">
-                        Based on your assessment, you are{" "}
-                        <strong>{bestCareer.fullName}</strong>. Your career
-                        profile suggests a strong inclination toward the field
-                        of <strong>{bestCareer.fieldOfStudy}</strong> including
-                        areas like {bestCareer.career}
+                      <div className="bg-purple-50">
+                        <div className="flex flex-col items-center py-10">
+                          {bestCareer.matchedCareers[0] && (
+                            <h1 className="text-6xl font-roboto font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-sky-600">
+                              {bestCareer.primaryCareerMatch.title}
+                            </h1>
+                          )}
+
+                          <div
+                            className="py-5 grid md:grid-cols-3 grid-cols-1 gap-4"
+                            data-aos="fade-up"
+                            data-aos-duration="1500"
+                          >
+                            {bestCareer.matchedCareers.map((content) => {
+                              const typeNameMap = {
+                                R: "Practical Power",
+                                I: "Analytical Power",
+                                A: "Creative Power",
+                                S: "Helping Power",
+                                E: "Leadership Power",
+                                C: "Organizing Power",
+                              };
+
+                              const typeColor = {
+                                R: "text-[#819A91]",
+                                I: "text-[#687FE5]",
+                                A: "text-[#DEAA79]",
+
+                                S: "text-[#8E7DBE]",
+                                E: "text-[#AF3E3E]",
+                                C: "text-[#a23eaf]",
+                              };
+
+                              const percentageMap = {
+                                R: bestCareer.realistic.percentage,
+                                I: bestCareer.investigative.percentage,
+                                A: bestCareer.artistic.percentage,
+
+                                S: bestCareer.social.percentage,
+                                E: bestCareer.enterprising.percentage,
+                                C: bestCareer.conventional.percentage,
+                              };
+
+                              return (
+                                <div
+                                  className={`flex flex-col  shadow-sm  p-6 ${
+                                    typeColor[content.type]
+                                  } hover:bg-purple-800 hover:text-white`}
+                                >
+                                  <div
+                                    key={content.id}
+                                    className="flex items-center mb-4"
+                                  >
+                                    <h1 className="block font-bold text-5xl">
+                                      {percentageMap[content.type]}%
+                                    </h1>
+                                  </div>
+                                  <div className="text-center">
+                                    <h5 className="  font-semibold text-sm/7">
+                                      {typeNameMap[content.type]}
+                                    </h5>
+                                  </div>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        </div>
+                      </div>
+                      <p className="text-md/7 font-roboto leading-7 py-2">
+                        <strong>Hey, {user?.name || "Guest"}!</strong>
                       </p>
-                      <div className="py-5">
-                        <p className="text-md/7 font-roboto leading-7">
-                          {bestCareer.careerDesc}
-                        </p>
-                      </div>
-                      <div className="py-5">
-                        {" "}
-                        <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold py-2">
-                          Action Plan
-                        </p>
-                        <p
-                          className="text-md/7 font-roboto leading-7"
-                          style={{ whiteSpace: "pre-line" }}
-                        >
-                          {bestCareer.actionPlan}
-                        </p>
-                      </div>
-                      <div className="py-5">
-                        {" "}
-                        <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold py-2">
-                          Relevance Today & Tomorrow
+                      <p className="text-md/7 font-roboto leading-7 pb-3">
+                        Based on your assessment, you are{" "}
+                        <strong>{bestCareer.fullName}</strong>.
+                      </p>
+                      <div className="p-5 bg-[#e0eaf4]  rounded-md">
+                        <p className="text-lg md:text-xl leading-[2] px-30 font-roboto font-bold py-2 text-[#3B82F6]">
+                          <HiMiniArrowTrendingUp
+                            size={60}
+                            style={{
+                              backgroundColor: "#eaf4f1",
+                              border: "solid 5px #3B82F6",
+                              borderRadius: "10px",
+                              padding: "5px",
+                              margin: "5px",
+                            }}
+                          />
+                          Career Insights
                         </p>
                         <p
-                          className="text-md/7 font-roboto leading-7"
+                          className="text-md/7 font-roboto leading-7 text-justify"
                           style={{ whiteSpace: "pre-line" }}
                         >
-                          {bestCareer.todayRelevance}
-                        </p>
-                        <p
-                          className="text-md/7 font-roboto leading-7"
-                          style={{ whiteSpace: "pre-line" }}
-                        >
-                          {bestCareer.futureRelevance}
+                          {bestCareer.primaryCareerMatch?.careerDesc}
                         </p>
                       </div>
                       <div
-                        className="py-5"
+                        className="p-10"
                         style={{
                           pageBreakBefore: "always",
                           pageBreakInside: "avoid",
                         }}
                       >
-                        <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold py-2">
-                          Strengths
-                        </p>
-                        <p
-                          className="text-md/7 font-roboto leading-7"
-                          style={{ whiteSpace: "pre-line" }}
-                        >
-                          {bestCareer.strength}
-                        </p>
-                      </div>
-                      <div className="py-5">
-                        <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold py-2">
-                          Potential Weakness
-                        </p>
-                        <p
-                          className="text-md/7 font-roboto leading-7"
-                          style={{ whiteSpace: "pre-line" }}
-                        >
-                          {bestCareer.weaknesses}
-                        </p>
-                      </div>
-                      <div className="py-5">
-                        {" "}
-                        <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold">
+                        <h1 className="text-3xl font-roboto font-bold text-center">
                           Type Analysis
-                        </p>
+                        </h1>
                       </div>
-                      <div>
-                        <MyBarChart bestCareer={bestCareer} />
-                      </div>
-                      <div
-                        className="py-2"
-                        style={{
-                          pageBreakBefore: "always",
-                          pageBreakInside: "avoid",
-                        }}
-                      >
-                        <div className="flex flex-row  py-5">
-                          {" "}
-                          <p className="text-lg md:text-xl leading-[2] font-semibold px-30 font-roboto">
-                            Realistic{" "}
-                          </p>
-                          <span className="text-gray-700 ml-auto font-semibold">
-                            {bestCareer.realistic.percentage}%
-                          </span>
-                        </div>
+                      <div className="grid grid-cols-3 gap-5 pb-5">
+                        {bestCareer.matchedCareers?.map((content) => {
+                          const percentageMap = {
+                            R: bestCareer.realistic.percentage,
+                            I: bestCareer.investigative.percentage,
+                            A: bestCareer.artistic.percentage,
 
-                        <div className="h-4 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${
-                              bestCareer.realistic === null
-                                ? "bg-gray-200"
-                                : "bg-[#819A91]"
-                            }`}
-                            style={{
-                              width:
-                                bestCareer.realistic === null
-                                  ? "0%"
-                                  : `${bestCareer.realistic.percentage}%`,
-                            }}
-                          ></div>
-                        </div>
+                            S: bestCareer.social.percentage,
+                            E: bestCareer.enterprising.percentage,
+                            C: bestCareer.conventional.percentage,
+                          };
+                          const IconComponent = icons[content.type];
+                          return (
+                            <div
+                              className="p-3 bg-white rounded-xl mb-3"
+                              key={content.id}
+                            >
+                              <p className="text-lg md:text-xl font-roboto font-bold flex items-center gap-2 text-slate-700">
+                                {IconComponent && (
+                                  <IconComponent
+                                    size={22}
+                                    style={{
+                                      backgroundColor: colorMap[content.type],
 
-                        <div className="py-2">
-                          <p className="text-md/7 font-roboto leading-7">
-                            {careerTypeDesc.realistic}
-                          </p>
-                        </div>
-                        <div>
-                          <p
-                            className="text-md/7 font-roboto leading-7"
-                            dangerouslySetInnerHTML={{
-                              __html: bestCareer.realistic.description,
+                                      color: "#ffffff",
+                                      borderRadius: "8px",
+                                      padding: "5px",
+                                      margin: "0px",
+                                    }}
+                                  />
+                                )}
+                                {title[content.type]}
+                              </p>
+
+                              <div className="flex items-center mt-2">
+                                <p
+                                  className=" font-semibold font-roboto text-sm/10"
+                                  style={{ color: colorMap[content.type] }}
+                                >
+                                  {content.fullName}
+                                </p>
+                                <span className="text-gray-700 ml-auto font-semibold text-sm/10">
+                                  {percentageMap[content.type]}%
+                                </span>
+                              </div>
+
+                              <div className="h-3 rounded-full overflow-hidden mt-1 bg-gray-200">
+                                <div
+                                  className={`h-full `}
+                                  style={{
+                                    backgroundColor:
+                                      percentageMap[content.type] == null
+                                        ? "bg-gray-200"
+                                        : colorMap[content.type],
+                                    width:
+                                      percentageMap[content.type] == null
+                                        ? "0%"
+                                        : `${percentageMap[content.type]}%`,
+                                  }}
+                                ></div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {bestCareer.matchedCareers?.map((content) => (
+                        <div className="mb-5 grid md:grid-cols-1">
+                          <div
+                            style={{
+                              backgroundColor: colorMapBg[content.type],
                             }}
-                          />{" "}
+                            className="flex flex-col shadow-sm  p-6 text-slate-800 "
+                          >
+                            <div className="flex items-center mb-4">
+                              <h5 className="  font-semibold text-sm/7">
+                                {content.fullName} - {title[content.type]}
+                              </h5>
+                            </div>
+                            <p className="block  pb-3 text-sm/7 text-justify">
+                              {content.careerDesc}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+
+                      <div className="py-5">
+                        {" "}
+                        <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold py-2"></p>
+                        <div className="bg-purple-50">
+                          <div className="flex flex-col items-center py-10">
+                            <h1 className="text-3xl font-roboto font-bold text-center">
+                              What's your power
+                            </h1>
+                            <div
+                              className="py-5 grid md:grid-cols-3 grid-cols-1 gap-4 "
+                              data-aos="fade-up"
+                              data-aos-duration="1500"
+                            >
+                              {bestCareer.primaryCareerMatch?.powers?.map(
+                                (content) => {
+                                  const icons = {
+                                    FaBrain: (
+                                      <FaBrain
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                    FaLightbulb: (
+                                      <FaLightbulb
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                    FaEye: (
+                                      <FaEye
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                    FaCompass: (
+                                      <FaCompass
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                    FaBalanceScale: (
+                                      <FaBalanceScale
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                  };
+                                  return (
+                                    <div className="flex flex-col bg-white shadow-sm  p-6 text-slate-800 hover:bg-purple-800 hover:text-white">
+                                      <div
+                                        key={content.id}
+                                        className="flex items-center mb-4"
+                                      >
+                                        <h5 className="  font-semibold text-lg">
+                                          {icons[content.icon]}
+                                          {content.title}
+                                        </h5>
+                                      </div>
+                                      <p className="block  pb-3 text-sm/7 text-justify">
+                                        {content.desc}
+                                      </p>
+                                    </div>
+                                  );
+                                }
+                              )}
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div
-                        className="py-5"
+                        className="bg-purple-50"
                         style={{
                           pageBreakBefore: "always",
                           pageBreakInside: "avoid",
                         }}
                       >
-                        <div className="flex flex-row  py-5">
-                          {" "}
-                          <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                            Investigative{" "}
-                          </p>
-                          <span className="text-gray-700 ml-auto font-semibold">
-                            {bestCareer.investigative.percentage}%
-                          </span>
-                        </div>
-                        <div className="h-4  rounded-full overflow-hidden">
+                        <div className="flex flex-col items-center py-10">
+                          <h1 className="text-3xl font-roboto font-bold text-center pb-5">
+                            Data Visualization{" "}
+                          </h1>
                           <div
-                            className={`h-full ${
-                              bestCareer.investigative === null
-                                ? "bg-gray-200"
-                                : "bg-[#687FE5]"
-                            }`}
-                            style={{
-                              width:
-                                bestCareer.investigative === null
-                                  ? "0%"
-                                  : `${bestCareer.investigative.percentage}%`,
-                            }}
-                          ></div>
-                        </div>
-                        <div className="py-5">
-                          <p className="text-md/7 font-roboto leading-7">
-                            {careerTypeDesc.investigative}
-                          </p>
-                        </div>
-                        <div>
-                          <p
-                            className="text-md/7 font-roboto leading-7"
-                            dangerouslySetInnerHTML={{
-                              __html: bestCareer.investigative.description,
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className=" py-2"
-                        style={{
-                          pageBreakBefore: "always",
-                          pageBreakInside: "avoid",
-                        }}
-                      >
-                        <div className="flex flex-row  py-5">
-                          {" "}
-                          <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                            Artistic{" "}
-                          </p>
-                          <span className="text-gray-700 ml-auto font-semibold">
-                            {bestCareer.artistic.percentage}%
-                          </span>
-                        </div>
-                        <div className="h-4  rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${
-                              bestCareer.artistic === null
-                                ? "bg-gray-200"
-                                : "bg-[#DEAA79]"
-                            }`}
-                            style={{
-                              width:
-                                bestCareer.artistic === null
-                                  ? "0%"
-                                  : `${bestCareer.artistic.percentage}%`,
-                              backgroundColor:
-                                bestCareer.artistic === null
-                                  ? "bg-gray-200"
-                                  : "bg-pink-700 ",
-                            }}
-                          ></div>
-                        </div>
-                        <div className="py-2">
-                          <p className="text-md/7 font-roboto leading-7 ">
-                            {careerTypeDesc.artistic}
-                          </p>
-                        </div>
-                        <div className="py-5">
-                          <p
-                            className="text-md/7 font-roboto leading-7"
-                            dangerouslySetInnerHTML={{
-                              __html: bestCareer.artistic.description,
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className="py-2"
-                        style={{
-                          pageBreakBefore: "always",
-                          pageBreakInside: "avoid",
-                        }}
-                      >
-                        <div className="flex flex-row  py-5">
-                          {" "}
-                          <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                            Social{" "}
-                          </p>
-                          <span className="text-gray-700 ml-auto font-semibold">
-                            {bestCareer.social.percentage}%
-                          </span>
-                        </div>
-                        <div className="h-4 rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${
-                              bestCareer.social === null
-                                ? "bg-gray-200"
-                                : "bg-[#8E7DBE]"
-                            }`}
-                            style={{
-                              width:
-                                bestCareer.social === null
-                                  ? "0%"
-                                  : `${bestCareer.social.percentage}%`,
-                              backgroundColor:
-                                bestCareer.social === null
-                                  ? "bg-gray-200"
-                                  : "bg-violet-600",
-                            }}
-                          ></div>
-                        </div>
-                        <div className="py-2">
-                          <p className="text-md/7 font-roboto leading-7">
-                            {careerTypeDesc.social}
-                          </p>
-                        </div>
-                        <div>
-                          <p
-                            className="text-md/7 font-roboto leading-7"
-                            dangerouslySetInnerHTML={{
-                              __html: bestCareer.social.description,
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className="py-2"
-                        style={{
-                          pageBreakBefore: "always",
-                          pageBreakInside: "avoid",
-                        }}
-                      >
-                        <div className="flex flex-row  py-5">
-                          {" "}
-                          <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                            Enterprising{" "}
-                          </p>
-                          <span className="text-gray-700 ml-auto font-semibold">
-                            {bestCareer.enterprising.percentage}%
-                          </span>
-                        </div>
-                        <div className="h-4  rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${
-                              bestCareer.enterprising === null
-                                ? "bg-gray-200"
-                                : "bg-[#AF3E3E]"
-                            }`}
-                            style={{
-                              width:
-                                bestCareer.enterprising === null
-                                  ? "0%"
-                                  : `${bestCareer.enterprising.percentage}%`,
-                            }}
-                          ></div>
-                        </div>{" "}
-                        <div className="py-5">
-                          <p className="text-md/7 font-roboto leading-7">
-                            {careerTypeDesc.enterprising}
-                          </p>
-                        </div>
-                        <div>
-                          <p
-                            className="text-md/7 font-roboto leading-7"
-                            dangerouslySetInnerHTML={{
-                              __html: bestCareer.enterprising.description,
-                            }}
-                          />
-                        </div>
-                      </div>
-                      <div
-                        className="py-2"
-                        style={{
-                          pageBreakBefore: "always",
-                          pageBreakInside: "avoid",
-                        }}
-                      >
-                        <div className="flex flex-row  py-5">
-                          {" "}
-                          <p className="text-lg md:text-xl leading-[2] font-semibold  px-30 font-roboto">
-                            Conventional{" "}
-                          </p>
-                          <span className="text-gray-700 ml-auto font-semibold">
-                            {bestCareer.conventional.percentage}%
-                          </span>
-                        </div>
-                        <div className="h-4  rounded-full overflow-hidden">
-                          <div
-                            className={`h-full ${
-                              bestCareer.conventional === null
-                                ? "bg-gray-200"
-                                : "bg-[#a23eaf]"
-                            }`}
-                            style={{
-                              width:
-                                bestCareer.conventional === null
-                                  ? "0%"
-                                  : `${bestCareer.conventional.percentage}%`,
-                            }}
-                          ></div>
-                        </div>{" "}
-                        <div className="py-5">
-                          <p className="text-md/7 font-roboto leading-7">
-                            {careerTypeDesc.conventional}
-                          </p>
-                        </div>
-                        <div>
-                          <p
-                            className="text-md/7 font-roboto leading-7"
-                            dangerouslySetInnerHTML={{
-                              __html: bestCareer.conventional.description,
-                            }}
-                          />
+                            className="py-5 grid md:grid-cols-2 grid-cols-1 gap-4"
+                            data-aos="fade-up"
+                            data-aos-duration="1500"
+                          >
+                            <div className=" flex flex-col items-center ">
+                              <h1 className="text-2xl font-roboto font-bold text-center pb-5">
+                                Personality Overview
+                              </h1>
+                              <p className="block  pb-3 text-sm/7 text-justify">
+                                {bestCareer.primaryCareerMatch.typeDesc}
+                              </p>
+                            </div>
+                            <div
+                              className="flex flex-col
+                              bg-white
+                              shadow-sm
+                              p-6 rounded-3xl "
+                            >
+                              <MyPolarAreaChart bestCareer={bestCareer} />
+                            </div>
+                          </div>
                         </div>
                       </div>
                       <div
@@ -932,25 +918,248 @@ const Result = () => {
                         }}
                       >
                         {" "}
-                        <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold">
-                          Conclusion
-                        </p>
-                        <p className="text-md/7 font-roboto leading-7">
-                          Your career assessment highlights your unique
-                          strengths, interests, and preferences, offering clear
-                          direction for your professional journey. By aligning
-                          your skills and values with the right opportunities,
-                          you can pursue a path that is both fulfilling and
-                          sustainable. Remember, this report is a guide—not a
-                          limit. Continual learning, adaptability, and openness
-                          to new experiences will help you refine your choices
-                          and thrive in an ever-changing career landscape.
-                        </p>
+                        <p className="text-lg md:text-xl leading-[2]  px-30 font-roboto font-bold py-2"></p>
+                        <div className="bg-purple-50">
+                          <div className="flex flex-col items-center py-10">
+                            <h1 className="text-3xl font-roboto font-bold text-center">
+                              Weakness to Transform
+                            </h1>
+                            <div
+                              className="py-5 grid md:grid-cols-3 grid-cols-1 gap-4"
+                              data-aos="fade-up"
+                              data-aos-duration="1500"
+                            >
+                              {bestCareer.primaryCareerMatch?.weaknesses?.map(
+                                (content) => {
+                                  const icons = {
+                                    IoAlertCircle: (
+                                      <IoAlertCircle
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                    FaHeart: (
+                                      <FaHeart
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                    TbMoodSadFilled: (
+                                      <TbMoodSadFilled
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                    MdAccessTimeFilled: (
+                                      <MdAccessTimeFilled
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                    MdHexagon: (
+                                      <MdHexagon
+                                        size={30}
+                                        style={{ color: "#8E24AA" }}
+                                      />
+                                    ),
+                                  };
+                                  return (
+                                    <div className="flex flex-col bg-white shadow-sm  p-6 text-slate-800 hover:bg-purple-800 hover:text-white">
+                                      <div
+                                        key={content.id}
+                                        className="flex items-center mb-4"
+                                      >
+                                        <h5 className="  font-semibold text-lg">
+                                          {icons[content.icon]}
+                                          {content.title}
+                                        </h5>
+                                      </div>
+                                      <p className="block  pb-3 text-sm/7 text-justify">
+                                        {content.desc}
+                                      </p>
+                                    </div>
+                                  );
+                                }
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div
+                        style={{
+                          pageBreakBefore: "always",
+                          pageBreakInside: "avoid",
+                        }}
+                      >
+                        <h1 className="text-3xl font-roboto font-bold text-center">
+                          Professional Overview
+                        </h1>
+
+                        <div className="flex flex-col items-center py-5">
+                          <div
+                            className={`py-5 grid ${
+                              bestCareer.primaryCareerMatch?.workplaceHabits &&
+                              bestCareer.primaryCareerMatch?.careerPaths
+                                ? "md:grid-cols-2 gap-4"
+                                : "md:grid-cols-1"
+                            }  `}
+                            data-aos="fade-up"
+                            data-aos-duration="1500"
+                          >
+                            {bestCareer.primaryCareerMatch?.workplaceHabits && (
+                              <div className="p-5 bg-[#e0eaf4]  rounded-md">
+                                <p className="text-lg md:text-xl leading-[2] px-30 font-roboto font-bold py-2 text-[#3B82F6]">
+                                  <FaBuilding
+                                    size={60}
+                                    style={{
+                                      backgroundColor: "#eaf4f1",
+                                      border: "solid 5px #3B82F6",
+                                      borderRadius: "10px",
+                                      padding: "5px",
+                                      margin: "5px",
+                                    }}
+                                  />
+                                  {
+                                    bestCareer.primaryCareerMatch
+                                      ?.workplaceHabits?.title
+                                  }
+                                </p>
+                                <p
+                                  className="text-md/7 font-roboto leading-7 text-justify"
+                                  style={{ whiteSpace: "pre-line" }}
+                                >
+                                  {
+                                    bestCareer.primaryCareerMatch
+                                      ?.workplaceHabits?.desc
+                                  }
+                                </p>
+                              </div>
+                            )}
+                            {bestCareer.primaryCareerMatch?.careerPaths && (
+                              <div className="p-5 bg-[#e0ece8]  rounded-md">
+                                <p className="text-lg md:text-xl leading-[2] px-30 font-roboto font-bold py-2 text-[#2DBAA4]">
+                                  <HiMiniArrowTrendingUp
+                                    size={60}
+                                    style={{
+                                      backgroundColor: "#eaf4f1",
+                                      border: "solid 5px #2DBAA4",
+                                      borderRadius: "10px",
+                                      padding: "5px",
+                                      margin: "5px",
+                                    }}
+                                  />
+                                  {
+                                    bestCareer.primaryCareerMatch?.careerPaths
+                                      ?.title
+                                  }
+                                </p>
+                                <p
+                                  className="text-md/7 font-roboto leading-7 text-justify"
+                                  style={{ whiteSpace: "pre-line" }}
+                                >
+                                  {
+                                    bestCareer.primaryCareerMatch?.careerPaths
+                                      ?.desc
+                                  }
+                                </p>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+
+                        {bestCareer.primaryCareerMatch
+                          ?.seekingNewChallenges && (
+                          <div className="p-5 bg-[#e920630d]  rounded-md mb-10">
+                            <p className="text-lg md:text-xl leading-[2] px-30 font-roboto font-bold py-2 text-[#b5053fdb]">
+                              <FaMountain
+                                size={60}
+                                style={{
+                                  backgroundColor: "#e920630d",
+                                  border: "solid 5px #b5053fdb",
+                                  borderRadius: "10px",
+                                  padding: "5px",
+                                  margin: "5px",
+                                }}
+                              />
+                              {
+                                bestCareer.primaryCareerMatch
+                                  ?.seekingNewChallenges?.title
+                              }
+                            </p>
+                            <p
+                              className="text-md/7 font-roboto leading-7 text-justify"
+                              style={{ whiteSpace: "pre-line" }}
+                            >
+                              {
+                                bestCareer.primaryCareerMatch
+                                  ?.seekingNewChallenges?.desc
+                              }
+                            </p>
+                          </div>
+                        )}
+
+                        {bestCareer.primaryCareerMatch?.whatToImprove && (
+                          <div className="p-5 bg-[#E0F2FE]  rounded-md mb-10">
+                            <p className="text-lg md:text-xl leading-[2] px-30 font-roboto font-bold py-2 text-blue-800">
+                              <GoGraph
+                                size={60}
+                                style={{
+                                  backgroundColor: "#E0F2FE",
+                                  border: "solid 5px #1565c0",
+                                  borderRadius: "10px",
+                                  padding: "5px",
+                                  margin: "5px",
+                                }}
+                              />
+                              {
+                                bestCareer.primaryCareerMatch?.whatToImprove
+                                  ?.title
+                              }
+                            </p>
+                            <p
+                              className="text-md/7 font-roboto leading-7 text-justify"
+                              style={{ whiteSpace: "pre-line" }}
+                            >
+                              {
+                                bestCareer.primaryCareerMatch?.whatToImprove
+                                  ?.desc
+                              }
+                            </p>
+                          </div>
+                        )}
+
+                        {bestCareer.primaryCareerMatch?.idealFuture && (
+                          <div className="p-5 bg-[#e920630d]  rounded-md mb-10">
+                            <p className="text-lg md:text-xl leading-[2] px-30 font-roboto font-bold py-2 text-[#b5053fdb]">
+                              <FaMountain
+                                size={60}
+                                style={{
+                                  backgroundColor: "#e920630d",
+                                  border: "solid 5px #b5053fdb",
+                                  borderRadius: "10px",
+                                  padding: "5px",
+                                  margin: "5px",
+                                }}
+                              />
+                              {
+                                bestCareer.primaryCareerMatch?.idealFuture
+                                  ?.title
+                              }
+                            </p>
+                            <p
+                              className="text-md/7 font-roboto leading-7 text-justify"
+                              style={{ whiteSpace: "pre-line" }}
+                            >
+                              {bestCareer.primaryCareerMatch?.idealFuture?.desc}
+                            </p>
+                          </div>
+                        )}
                       </div>
                     </>
                   ) : (
                     <>
-                      <p className="text-md/7 font-roboto leading-7 py-5">
+                      {/*<MyBubbleChart percentage={{ percentage }} />*/}
+                      <p className="text-md/7 font-roboto leading-7 py-5 text-justify">
                         Based on your personality assessment, your key traits
                         highlight that you are best described as...
                       </p>
@@ -968,7 +1177,7 @@ const Result = () => {
                           </span>
                         </div>
 
-                        <div className="h-4 rounded-full overflow-hidden">
+                        <div className="h-4 rounded-full overflow-hidden bg-gray-300">
                           <div
                             className={`h-full ${
                               percentage.Openness === null
@@ -985,13 +1194,13 @@ const Result = () => {
                         </div>
 
                         <div className="py-5">
-                          <p className="text-md/7 font-roboto leading-7">
+                          <p className="text-md/7 font-roboto leading-7 text-justify">
                             {traitDesc.openness}
                           </p>
                         </div>
                         <div>
                           <p
-                            className="text-md/7 font-roboto leading-7"
+                            className="text-md/7 font-roboto leading-7 text-justify"
                             dangerouslySetInnerHTML={{ __html: desc.openness }}
                           />{" "}
                         </div>
@@ -1006,7 +1215,7 @@ const Result = () => {
                             {percentage.conscientiousness}%
                           </span>
                         </div>
-                        <div className="h-4  rounded-full overflow-hidden">
+                        <div className="h-4  rounded-full overflow-hidden bg-gray-300">
                           <div
                             className={`h-full ${
                               percentage.Conscientiousness === null
@@ -1022,13 +1231,13 @@ const Result = () => {
                           ></div>
                         </div>
                         <div className="py-5">
-                          <p className="text-md/7 font-roboto leading-7">
+                          <p className="text-md/7 font-roboto leading-7 text-justify">
                             {traitDesc.conscientiousness}
                           </p>
                         </div>
                         <div>
                           <p
-                            className="text-md/7 font-roboto leading-7"
+                            className="text-md/7 font-roboto leading-7 text-justify"
                             dangerouslySetInnerHTML={{
                               __html: desc.conscientiousness,
                             }}
@@ -1045,7 +1254,7 @@ const Result = () => {
                             {percentage.extraversion}%
                           </span>
                         </div>
-                        <div className="h-4  rounded-full overflow-hidden">
+                        <div className="h-4  rounded-full overflow-hidden bg-gray-300">
                           <div
                             className={`h-full ${
                               percentage.extraversion === null
@@ -1065,13 +1274,13 @@ const Result = () => {
                           ></div>
                         </div>
                         <div className="py-5">
-                          <p className="text-md/7 font-roboto leading-7 font-semibold">
+                          <p className="text-md/7 font-roboto leading-7  text-justify">
                             {traitDesc.extraversion}
                           </p>
                         </div>
                         <div className="py-5">
                           <p
-                            className="text-md/7 font-roboto leading-7"
+                            className="text-md/7 font-roboto leading-7 text-justify"
                             dangerouslySetInnerHTML={{
                               __html: desc.extraversion,
                             }}
@@ -1088,7 +1297,7 @@ const Result = () => {
                             {percentage.agreeableness}%
                           </span>
                         </div>
-                        <div className="h-4 rounded-full overflow-hidden">
+                        <div className="h-4 rounded-full overflow-hidden bg-gray-300">
                           <div
                             className={`h-full ${
                               percentage.agreeableness === null
@@ -1108,13 +1317,13 @@ const Result = () => {
                           ></div>
                         </div>
                         <div className="py-5">
-                          <p className="text-md/7 font-roboto leading-7">
+                          <p className="text-md/7 font-roboto leading-7 text-justify">
                             {traitDesc.agreeableness}
                           </p>
                         </div>
                         <div className="py-3">
                           <p
-                            className="text-md/7 font-roboto leading-7"
+                            className="text-md/7 font-roboto leading-7 text-justify"
                             dangerouslySetInnerHTML={{
                               __html: desc.agreeableness,
                             }}
@@ -1131,7 +1340,7 @@ const Result = () => {
                             {percentage.neuroticism}%
                           </span>
                         </div>
-                        <div className="h-4  rounded-full overflow-hidden">
+                        <div className="h-4  rounded-full overflow-hidden bg-gray-300">
                           <div
                             className={`h-full ${
                               percentage.neuroticism === null
@@ -1147,13 +1356,13 @@ const Result = () => {
                           ></div>
                         </div>{" "}
                         <div className="py-5">
-                          <p className="text-md/7 font-roboto leading-7">
+                          <p className="text-md/7 font-roboto leading-7  text-justify">
                             {traitDesc.neuroticism}
                           </p>
                         </div>
                         <div className="py-3">
                           <p
-                            className="text-md/7 font-roboto leading-7"
+                            className="text-md/7 font-roboto leading-7  text-justify"
                             dangerouslySetInnerHTML={{
                               __html: desc.neuroticism,
                             }}
@@ -1165,18 +1374,6 @@ const Result = () => {
                 </div>
               </div>
             </div>
-            {/*<div className="flex flex-row py-10">
-          <div className="ml-auto">
-            <button
-              onClick={toggleModal}
-              type="button"
-              className="bg-purple-900 hover:bg-purple-950  w-48 h-10 text-white text-[14px] font-bold rounded-lg"
-            >
-              Send Results to Email
-            </button>
-            {isModalOpen && <Login />}
-          </div>
-        </div>*/}
           </div>
         </>
       )}

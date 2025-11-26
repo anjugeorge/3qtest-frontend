@@ -149,7 +149,7 @@ const CareerAssessment = () => {
       <form>
         <CareerAssessmentHero />
         <div className="container py-20">
-          <div className="font-roboto space-y-10 bg-purple-50 p-20 text-center">
+          <div className="font-roboto space-y-10 bg-purple-50 md:p-20 p-10 text-center">
             <div className="py-5">
               <label className="text-sm">
                 Question {questionId[currentQuestionId]} of {questions.length}

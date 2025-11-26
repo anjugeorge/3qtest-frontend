@@ -30,7 +30,7 @@ const CareerAssessmentHero = () => {
               <br /> where you're most likely to succeed and feel fulfilled.
             </p>
           </div>
-          <div
+          {/*   <div
             className="py-5 text-sm  leading-loose text-center mx-auto px-30 "
             style={{
               background: "#fff3cd",
@@ -67,7 +67,7 @@ const CareerAssessmentHero = () => {
               </a>
               {isModalOpen && <Disclaimer closeModal={closeModal} />}
             </div>
-          </div>
+          </div> */}
         </div>
         <img className="max-w-sm mx-auto" src="" />
       </div>

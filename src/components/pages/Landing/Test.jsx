@@ -15,7 +15,7 @@ const Test = () => {
             Discover Yourself
           </h1>
 
-          <p className="font-roboto leading-7 py-5 px-5 text-center md:text-start">
+          <p className="font-roboto leading-7 py-5 px-5 text-justify">
             For atleast once in life you must have wished for a sure-fire way to
             figure out what you wanted to do with your life. Our 3QTests
             assessments will help pinpoint your interests and strengths so you
@@ -34,10 +34,10 @@ const Test = () => {
               </div>
 
               <div class="px-6 py-4">
-                <p class="text-gray-700 text-base">
+                <p class="text-gray-700 text-base text-justify">
                   Personality traits aren't just important when choosing a
                   career; they can also be helpful when assessing your current
-                  career.Try our 3QTest personality test for{" "}
+                  career.Try our 3QTests personality test for{" "}
                   <strong className="text-purple-900 animate-pulse font-bold">
                     free
                   </strong>{" "}
@@ -63,7 +63,7 @@ const Test = () => {
                 </div>
               </div>
               <div class="px-6 py-4">
-                <p class="text-gray-700 text-base">
+                <p class="text-gray-700 text-base text-justify">
                   Our career assessment is designed to help identify your
                   strengths and interests, and give you a better understanding
                   of what careers might be a good fit for you.Register and get

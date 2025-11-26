@@ -62,7 +62,7 @@ const ForgotPassword = () => {
           <div className="relative p-4 w-full max-w-md max-h-full">
             <div className="relative  shadow-lg bg-gray-100 h-[400px] overflow-y-auto">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-xl font-semibold text-gray-900 ">
                   Reset Password
                 </h3>
                 <button
@@ -94,7 +94,7 @@ const ForgotPassword = () => {
                   <div>
                     <label
                       for="fName"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                       Enter Your Email
                     </label>
@@ -103,7 +103,7 @@ const ForgotPassword = () => {
                       name="email"
                       id="email"
                       placeholder="••••••••"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 "
                       required
                       value={newPassword.email}
                       onChange={handleChange}
@@ -112,7 +112,7 @@ const ForgotPassword = () => {
                   <div>
                     <label
                       for="password"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900 "
                     >
                       Enter new password
                     </label>
@@ -121,14 +121,14 @@ const ForgotPassword = () => {
                       name="password"
                       id="password"
                       placeholder="••••••••"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:placeholder-gray-400 "
                       minLength={8}
                       required
                       value={newPassword.password}
                       onChange={handleChange}
                     />
                     <button
-                      className="absolute right-8 top-[13.6rem]"
+                      className="absolute right-8 md:top-[13.6rem] top-[13rem]"
                       onClick={toggleShowPassword}
                     >
                       {showPassword ? <FaEyeSlash /> : <FaEye />}

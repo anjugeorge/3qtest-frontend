@@ -86,15 +86,17 @@ const Register = () => {
       });
       closeCreateAccount();
     } catch (err) {
-      if (err.status === 409) {
-        alert("Eamil already registered");
+      if (err.status === 400) {
+        alert(
+          "This email is already registered. Please use a different email."
+        );
         setRegister({
           fullName: "",
           email: "",
           password: "",
         });
       } else {
-        alert("Error creating account. Please try again.");
+        alert(`${err.message} occured. Please try again later.`);
         setRegister({
           fullName: "",
           email: "",
@@ -117,7 +119,7 @@ const Register = () => {
           <div className="relative p-4 w-full max-w-md max-h-full">
             <div className="relative  shadow-lg bg-gray-100">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                <h3 className="text-xl font-semibold text-gray-900">
                   Sign up for an account
                 </h3>
                 <button
@@ -149,7 +151,7 @@ const Register = () => {
                   <div>
                     <label
                       for="fName"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900"
                     >
                       Your full name
                     </label>
@@ -157,7 +159,7 @@ const Register = () => {
                       type="text"
                       name="fName"
                       id="fName"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 00 dark:placeholder-gray-400 "
                       maxLength={50}
                       placeholder="full name"
                       required
@@ -168,7 +170,7 @@ const Register = () => {
                   <div>
                     <label
                       for="email"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900"
                     >
                       Your email
                     </label>
@@ -176,7 +178,7 @@ const Register = () => {
                       type="email"
                       name="email"
                       id="email"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:placeholder-gray-400"
                       placeholder="name@company.com"
                       required
                       value={register.email}
@@ -187,7 +189,7 @@ const Register = () => {
                   <div>
                     <label
                       for="password"
-                      className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                      className="block mb-2 text-sm font-medium text-gray-900"
                     >
                       Your password
                     </label>
@@ -196,7 +198,7 @@ const Register = () => {
                       name="password"
                       id="password"
                       placeholder="••••••••"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:placeholder-gray-400 "
                       required
                       minLength={8}
                       value={register.password}
@@ -204,7 +206,7 @@ const Register = () => {
                       autoComplete="new-password"
                     />
                     <button
-                      className="absolute right-8 top-[19rem]"
+                      className="absolute right-8 md:top-[19.1rem] top-[18.4rem]"
                       onClick={toggleShowPassword}
                     >
                       {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -220,7 +222,7 @@ const Register = () => {
                   </button>
                 </form>
                 <div className="mt-4">
-                  <p className="text-sm text-gray-500 dark:text-gray-300 text-center">
+                  <p className="text-sm text-gray-500  text-center">
                     By creating an account, you agree to our{" "}
                     <button
                       onClick={openModal}

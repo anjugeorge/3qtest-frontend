@@ -36,40 +36,40 @@ const FAQ = () => {
           </div>
 
           <div className="px-5">
-            <p className="text-md/7 text-gray-700 font-bold">
+            <p className="text-md/7 text-gray-700 font-bold text-justify">
               How do I figure out what career is right for me if I feel lost and
               don't know where to start?
             </p>
-            <p className="py-5 text-gray-600">
+            <p className="py-5 text-gray-600 text-justify">
               With our career assessment tool, we can help pinpoint your
               personality traits and interests so that you can find a career
               that makes you happy. We'll help match you with careers that fit
               your skills and passions
             </p>
-            <p className="text-md/7 text-gray-700 font-bold">
+            <p className="text-md/7 text-gray-700 font-bold text-justify">
               How do I discover my passions and figure out what career change
               will make me happy, when I’m not sure what I really want?
             </p>
-            <p className="py-5 text-gray-600">
+            <p className="py-5 text-gray-600 text-justify">
               A career assessment is the key to unlocking your interests and
               finding a career path that makes you happy. With your personality
               traits in hand, it becomes much easier to find a career that will
               make you excited to go to work every day.
             </p>
-            <p className="text-md/7 text-gray-700 font-bold">
+            <p className="text-md/7 text-gray-700 font-bold text-justify">
               How can I figure out what career path is right for me when I feel
               lost and overwhelmed by so many options?
             </p>
-            <p className="py-5 text-gray-600">
+            <p className="py-5 text-gray-600 text-justify">
               A career assessment is the key to finding your dream job. This
               quiz will help identify your personality traits and interests, and
               then recommend careers that fit you perfectly.
             </p>
-            <p className="text-md/7 text-gray-700 font-bold">
+            <p className="text-md/7 text-gray-700 font-bold text-justify">
               What should I do when all the advice and resources I’ve tried to
               figure out my career just leave me feeling more confused?
             </p>
-            <p className="py-5 text-gray-600">
+            <p className="py-5 text-gray-600 text-justify">
               A career assessment is the answer for you. This one is specific to
               your personality traits and interests, so it's guaranteed to help
               you find a career that makes you happy.

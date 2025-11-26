@@ -5,14 +5,14 @@ const AboutUs = () => {
     <>
       <div className="grid grid-cols-1 md:grid-cols-2 bg-white">
         {" "}
-        <div className="">
+        <div>
           <img src="/assets/aboutUs.png" className="w-full" />
         </div>
-        <div className="my-auto">
+        <div className="my-auto container">
           <h1 className="text-3xl font-roboto font-bold text-center">
             About Us
           </h1>
-          <p className="font-roboto leading-7 py-5 px-5 text-center md:text-start">
+          <p className="font-roboto leading-7 py-5 px-5  text-justify">
             3QTests is a Canadian-based company that helps you find the best
             career choice for yourself based on your personality traits. We
             believe that everyone has their own unique set of skills and

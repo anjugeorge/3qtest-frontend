@@ -38,14 +38,14 @@ const Footer = () => {
                 <img src="/assets/favicon.ico" className="w-8" />
                 <h1 className="text-2xl font-bold italic ">3QTests</h1>
               </a>
-              <p className=" text-sm/7 text-start text-gray-300">
+              <p className=" text-sm/7 text-start text-gray-300 text-justify">
                 3QTests is a Canadian-based company that helps you find the best
                 career choice for yourself based on your personality traits.We
                 want to help people find their passions and achieve their
                 dreams!
               </p>
             </div>
-            <div className="lg:mx-auto">
+            <div className="lg:mx-auto py-4">
               <h1 className="lg:text-xl md:text-lg text-sm text-start font-bold pb-5">
                 Links
               </h1>
@@ -72,7 +72,7 @@ const Footer = () => {
                   <form className="  pt-6 pb-8 mb-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
                     <div className="mb-4">
                       <label
-                        className="block text-gray-700 text-sm font-bold mb-2"
+                        className="block text-gray-700 text-sm font-bold mb-2 "
                         for="name"
                       >
                         Name

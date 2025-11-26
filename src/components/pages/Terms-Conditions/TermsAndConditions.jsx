@@ -12,7 +12,7 @@ const TermsAndConditions = ({ closeModal }) => {
         <div className="relative p-4 w-full max-w-md max-h-full">
           <div className="relative  shadow-lg bg-gray-100 h-[480px] overflow-y-auto">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-gray-900 ">
                 Terms and Conditions
               </h3>
               <button
@@ -39,23 +39,22 @@ const TermsAndConditions = ({ closeModal }) => {
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            <div className="p-4 md:p-5 text-sm text-gray-800">
-              <p className=" font-roboto leading-7 py-1 px-3 text-center md:text-start">
-                <strong>Disclaimer:</strong> The 3QTest platform provides
+            <div className="px-7 md:px-5 py-5 text-sm text-gray-800 ">
+              <p className=" font-roboto leading-7 py-1   text-justify">
+                <strong>Disclaimer:</strong> The 3QTests platform provides
                 personality and career interest explorers for educational and
                 informational purposes only.
                 <div>
                   {" "}
                   <strong>Important Disclaimers:</strong>
                 </div>
-                <ul className="list-disc">
+                <ul className="list-disc text-justify">
                   <li>
                     These tools are NOT professional psychological assessments
                     or career counseling{" "}
                   </li>
                   <li>
-                    Results are AI-generated and have not been validated by
-                    licensed professionals
+                    Results have not been validated by licensed professionals
                   </li>
                   <li>
                     This is NOT a substitute for advice from qualified career
@@ -83,15 +82,15 @@ const TermsAndConditions = ({ closeModal }) => {
                   </strong>
                 </div>
               </p>
-              <p className=" font-roboto leading-7 py-1 px-3 text-center md:text-start">
-                <strong>Privacy Policy:</strong> At 3QTest, your privacy is
+              <p className=" font-roboto leading-7 py-1  text-justify">
+                <strong>Privacy Policy:</strong> At 3QTests, your privacy is
                 important to us. We collect only the necessary personal
                 information—such as your name, email address, and test
                 responses—to deliver your results and improve your experience.
                 We do not sell or share your personal data with third parties
                 without your explicit consent, except as required by law.
               </p>
-              <p className=" font-roboto leading-7 py-1 px-3 text-center md:text-start">
+              <p className=" font-roboto leading-7 py-1  text-justify">
                 <strong>Payment Information:</strong> We use Stripe to securely
                 process payments. We do not store or have access to your full
                 credit card information. All payment data is handled directly by

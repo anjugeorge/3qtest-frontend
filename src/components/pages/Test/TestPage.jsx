@@ -52,16 +52,16 @@ const TestPage = () => {
             <h1 className="text-3xl font-roboto font-bold text-center">
               Personality Insights
             </h1>
-            <p className="font-roboto leading-7 py-5 px-5 text-center md:text-start">
+            <p className="font-roboto leading-7 py-5 px-5 text-justify">
               Understanding your personality is key when exploring new career
               paths. It helps match your traits with jobs that align with your
               strengths, ensuring a more fulfilling and successful journey.
               Whether you’re considering a career change or assessing your
               current job, knowing your personality type can provide valuable
-              insights. Take the free 3QTests personality insight today to
-              discover more about yourself and receive an in-depth results.
-              Registered users can save their reports for future. For a more
-              detailed career analysis, try the 3QTests for a small fee.
+              insights. Take the <strong>free</strong> 3QTests personality
+              insight today to discover more about yourself and receive an
+              in-depth results. Users can save their reports for future. For a
+              more detailed career analysis, try the 3QTests for a small fee.
             </p>
           </div>
         </div>
@@ -83,7 +83,9 @@ const TestPage = () => {
                         {content.title}
                       </h5>
                     </div>
-                    <p className="block  pb-3 text-sm/7">{content.desc}</p>
+                    <p className="block  pb-3 text-sm/7 text-justify">
+                      {content.desc}
+                    </p>
                   </div>
                 ))}
               </div>
@@ -102,14 +104,15 @@ const TestPage = () => {
             <h1 className="text-3xl font-roboto font-bold text-center">
               Career Interests
             </h1>
-            <p className="font-roboto leading-7 py-5 px-5 text-center md:text-start">
+            <p className="font-roboto leading-7 py-5 px-5 text-justify">
               Looking to start your career but unsure where to begin? Our career
               interests is designed to help you identify your strengths,
               interests, and ideal work environments, bringing you one step
-              closer to finding your dream job. For just $9.99, you’ll receive a
-              personalized report designed to help you understand your potential
-              and make informed career choices. Start your journey to success
-              today and discover what you were meant to do!
+              closer to finding your dream job. For just <strong>$9.99</strong>,
+              you’ll receive a personalized report designed to help you
+              understand your potential and make informed career choices. Start
+              your journey to success today and discover what you were meant to
+              do!
             </p>
           </div>
         </div>
@@ -131,7 +134,9 @@ const TestPage = () => {
                         {content.title}
                       </h5>
                     </div>
-                    <p className="block  pb-3 text-sm/7">{content.desc}</p>
+                    <p className="block  pb-3 text-sm/7 text-justify">
+                      {content.desc}
+                    </p>
                   </div>
                 ))}
               </div>

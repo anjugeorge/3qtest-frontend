@@ -88,10 +88,10 @@ const Login = ({ closeModal, redirectPath, setRedirectPath }) => {
         <div className="relative p-4 w-full max-w-md max-h-full">
           <div className="relative  shadow-lg bg-gray-100">
             <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+              <h3 className="text-xl font-semibold text-gray-900 ">
                 Sign in to{" "}
                 <strong className="text-2xl font-bold italic text-purple-950">
-                  3QTest
+                  3QTests
                 </strong>
               </h3>
               <button
@@ -123,7 +123,7 @@ const Login = ({ closeModal, redirectPath, setRedirectPath }) => {
                 <div>
                   <label
                     for="email"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900 "
                   >
                     Your email
                   </label>
@@ -131,7 +131,7 @@ const Login = ({ closeModal, redirectPath, setRedirectPath }) => {
                     type="email"
                     name="email"
                     id="email"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5   dark:placeholder-gray-400 "
                     placeholder="name@company.com"
                     required
                     value={login.email}
@@ -141,7 +141,7 @@ const Login = ({ closeModal, redirectPath, setRedirectPath }) => {
                 <div>
                   <label
                     for="password"
-                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                    className="block mb-2 text-sm font-medium text-gray-900 "
                   >
                     Your password
                   </label>
@@ -150,13 +150,13 @@ const Login = ({ closeModal, redirectPath, setRedirectPath }) => {
                     name="password"
                     id="password"
                     placeholder="••••••••"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5   dark:placeholder-gray-400 "
                     required
                     value={login.password}
                     onChange={handleChange}
                   />
                   <button
-                    className="absolute right-8 top-[13.6rem]"
+                    className="absolute right-8 md:top-[13.7rem] top-[13rem]"
                     onClick={toggleShowPassword}
                   >
                     {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -172,17 +172,17 @@ const Login = ({ closeModal, redirectPath, setRedirectPath }) => {
                 </button>
               </form>
               <div className="grid grid-cols-2 mt-5 mb-5">
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
+                <div className="text-sm font-medium text-gray-500 ">
                   Not registered?{" "}
                   <button
                     onClick={toggleIsCreateAccountOpen}
-                    className="text-blue-700 hover:underline dark:text-blue-500"
+                    className="text-blue-700 hover:underline dark:text-blue-500 "
                   >
                     Sign Up
                   </button>
                 </div>
                 {isCreateAccountOpen && <Register />}
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-300 text-end">
+                <div className="text-sm font-medium text-gray-500 dark:text-gray-300 text-end md:mt-0 mt-5">
                   <button
                     onClick={toggleIsForgotPassword}
                     className="text-blue-700 hover:underline dark:text-blue-500"
