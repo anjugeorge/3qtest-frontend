@@ -106,10 +106,12 @@ const TestPage = () => {
             </h1>
             <p className="font-roboto leading-7 py-5 px-5 text-justify">
               Looking to start your career but unsure where to begin? Our career
-              interests is designed to help you identify your strengths,
-              interests, and ideal work environments, bringing you one step
-              closer to finding your dream job. For just <strong>$9.99</strong>,
-              you’ll receive a personalized report designed to help you
+              interests assessment is designed to help you identify your
+              strengths, interests, and ideal work environments, bringing you
+              one step closer to finding your dream job. Register now for just{" "}
+              <strong className="font-bold text-purple-600">$4.99</strong>{" "}
+              <span class="line-through text-gray-500">$9.99</span>{" "}
+              (introductory offer) and receive a personalized report to help you
               understand your potential and make informed career choices. Start
               your journey to success today and discover what you were meant to
               do!
