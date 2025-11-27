@@ -61,7 +61,7 @@ const Payment = () => {
         id="authentication-modal"
         tabindex="-1"
         aria-hidden="true"
-        className="flex fixed  z-50 justify-center items-center w-full inset-0 h-[calc(100%-1rem)] max-h-full"
+        className="backdrop-blur-sm flex fixed  z-50 justify-center items-center w-full inset-0 h-[calc(100%-1rem)] max-h-full"
       >
         <div className="relative p-4 w-full max-w-md max-h-full">
           <div className="relative  shadow-lg bg-gray-100">
@@ -93,11 +93,15 @@ const Payment = () => {
                 <span className="sr-only">Close modal</span>
               </button>
             </div>
-            <div className="p-4 md:p-5 text-sm text-gray-800">
-              <p className=" font-roboto leading-7 py-1 px-3 text-center md:text-start">
-                To view your Career Test results, please complete the payment of{" "}
-                <strong>$9.99</strong>. This unlocks your personalized career
-                recommendations and suitable career paths.
+            <div className="p-4 md:p-5 text-sm text-gray-800 ">
+              <p className="font-roboto leading-7 py-1 px-3 text-center md:text-start">
+                To view your Career Test results, take advantage of our special
+                introductory offer!
+                <br />
+                Pay only <strong className="text-blue-800">$4.99</strong>{" "}
+                <span className=" line-through text-gray-500">$9.99</span> (50%
+                off). This unlocks your personalized career recommendations and
+                suitable career paths.
               </p>
             </div>
             <div className="p-4 md:p-5">

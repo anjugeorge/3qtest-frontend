@@ -29,45 +29,16 @@ const CareerAssessmentHero = () => {
               environments
               <br /> where you're most likely to succeed and feel fulfilled.
             </p>
-          </div>
-          {/*   <div
-            className="py-5 text-sm  leading-loose text-center mx-auto px-30 "
-            style={{
-              background: "#fff3cd",
-              borderLeft: "10px solid #ffc107",
-              padding: "15px",
-              margin: "50px 50px",
-              borderRadius: "4px",
-              color: "#474747",
-            }}
-          >
-            {" "}
-            <p>
-              <strong>
-                Important:This is an educational exploration tool. Results are
-                AI-generated and not professionally validated. Not a substitute
-                for professional assessment.
-              </strong>{" "}
-            </p>
-            <div className="text-center pt-2 text-sm text-[#474747]">
-              <p>
-                <strong>
-                  Please read this disclaimer before taking the test:
-                </strong>
+            <div className="mt-10 mr-20 ml-20 flex items-center space-x-2.5 border border-violet-500/30 rounded-full bg-purple-100 p-1 text-sm text-purple-800">
+              <div className="flex items-center space-x-1 bg-purple-900 text-white border border-violet-500 rounded-3xl px-3 py-1">
+                <p> Special Introductory Offer!</p>
+              </div>
+              <p className="pr-3">
+                Get 50% off! Pay only $4.99 (was $9.99) to unlock your
+                personalized career recommendations.
               </p>
-              <a
-                href="#"
-                style={{ textDecoration: "underline" }}
-                onClick={(e) => {
-                  e.preventDefault;
-                  openModal();
-                }}
-              >
-                <strong>Disclaimer</strong>
-              </a>
-              {isModalOpen && <Disclaimer closeModal={closeModal} />}
             </div>
-          </div> */}
+          </div>
         </div>
         <img className="max-w-sm mx-auto" src="" />
       </div>

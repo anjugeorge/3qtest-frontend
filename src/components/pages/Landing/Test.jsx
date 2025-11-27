@@ -55,23 +55,33 @@ const Test = () => {
               </div>
             </div>
             <div class="max-w-4xl rounded shadow-lg mx-auto ">
-              <div className="flex border-solid-2 bg-gray-50">
+              <div className="flex md:flex-row flex-col border-solid-2 bg-gray-50">
                 {" "}
                 <img src="/assets/career.png" className="w-16 h-16" />
                 <div class="font-bold text-xl ml-3  text-start  my-auto">
                   Career Interests
                 </div>
+                <div className="">
+                  {" "}
+                  <div className="mt-3 ml-3 mr-3 md:ml-5 md:mr-0 flex items-center space-x-2.5 border border-violet-500/30 rounded-full bg-purple-100 p-1 text-sm text-purple-800">
+                    <div className="flex items-center space-x-1 bg-purple-900 text-white border border-violet-500 rounded-3xl px-3 py-1">
+                      <p> Special Introductory Offer!</p>
+                    </div>
+                    <p className="pr-3">50% OFF</p>
+                  </div>
+                </div>
               </div>
               <div class="px-6 py-4">
                 <p class="text-gray-700 text-base text-justify">
                   Our career assessment is designed to help identify your
-                  strengths and interests, and give you a better understanding
-                  of what careers might be a good fit for you.Register and get
-                  started for{" "}
-                  <strong className="text-purple-900 animate-pulse font-bold">
-                    just $9.99
+                  strengths and interests, giving you a clear idea of which
+                  careers might be a great fit. Register now and get started for
+                  just{" "}
+                  <strong className="text-purple-900 animate-pulse  font-bold">
+                    just $4.99
                   </strong>{" "}
-                  and find out what you were meant to do!
+                  <span class="line-through text-gray-500">$9.99</span>{" "}
+                  (introductory offer) to discover what you were meant to do!
                 </p>
               </div>
               <div class="px-6  py-6  text-end">
