@@ -188,7 +188,11 @@ const Result = () => {
     setIsModalOpen(false);
   }
   React.useEffect(() => {
-    if (!user) return;
+    if (!user) {
+      window.location.href = "/";
+
+      return;
+    }
     if (testType === null) {
       setTimeout(() => {
         alert(
@@ -227,7 +231,7 @@ const Result = () => {
           sessionStorage.setItem("TokenExpired", "true");
           alert(
             error.response.data.message ||
-              "Session expired. Please log in again."
+              "Please log in to access this test. If you’re new here, you can quickly sign up to continue."
           );
           sessionStorage.removeItem("isLoggedInOnce");
           window.location.href = "/";
@@ -527,7 +531,7 @@ const Result = () => {
                         Career Interests Results
                       </h1>
                       <div className="container">
-                        <p className="text-lg md:text-md/7 leading-7 text-center mx-auto px-30 font-roboto text-justify">
+                        <p className="text-lg md:text-md/7 leading-7  mx-auto px-30 font-roboto text-justify">
                           Hey there! Thanks for completing the Career Test.
                           Let’s take a detailed, friendly look. Understanding
                           these can help you choose a career path where you’ll

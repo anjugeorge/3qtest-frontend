@@ -38,7 +38,7 @@ const Footer = () => {
                 <img src="/assets/favicon.ico" className="w-8" />
                 <h1 className="text-2xl font-bold italic ">3QTests</h1>
               </a>
-              <p className=" text-sm/7 text-start text-gray-300 text-justify">
+              <p className=" text-sm/7 text-gray-300 text-justify">
                 3QTests is a Canadian-based company that helps you find the best
                 career choice for yourself based on your personality traits.We
                 want to help people find their passions and achieve their

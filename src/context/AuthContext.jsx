@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
           setUser(protectedData.user);
         } else {
           setIsLoggedIn(false);
+
           setUser(null);
         }
       } catch (err) {
