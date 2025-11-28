@@ -100,7 +100,7 @@ const TestPage = () => {
           <div className="mx-auto">
             <img
               src="/assets/careerHat.png"
-              className=" max-w-72 md:max-w-96"
+              className=" max-w-64 md:max-w-80"
             />
           </div>
           <div className="my-auto">
