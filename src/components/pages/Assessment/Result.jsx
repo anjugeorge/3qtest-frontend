@@ -620,13 +620,13 @@ const Result = () => {
                       <div className="bg-purple-50">
                         <div className="flex flex-col items-center py-10">
                           {bestCareer.matchedCareers[0] && (
-                            <h1 className="text-6xl font-roboto font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-sky-600">
+                            <h1 className="text-3xl md:text-6xl font-roboto font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-800 to-sky-600">
                               {bestCareer.primaryCareerMatch.title}
                             </h1>
                           )}
 
                           <div
-                            className="py-5 grid md:grid-cols-3 grid-cols-1 gap-4"
+                            className="py-5 grid sm:grid-cols-3 grid-cols-1 gap-4"
                             data-aos="fade-up"
                             data-aos-duration="1500"
                           >
@@ -668,9 +668,9 @@ const Result = () => {
                                 >
                                   <div
                                     key={content.id}
-                                    className="flex items-center mb-4"
+                                    className=" text-center mb-4"
                                   >
-                                    <h1 className="block font-bold text-5xl">
+                                    <h1 className="block  font-bold text-2xl md:text-5xl">
                                       {percentageMap[content.type]}%
                                     </h1>
                                   </div>
@@ -724,7 +724,7 @@ const Result = () => {
                           Type Analysis
                         </h1>
                       </div>
-                      <div className="grid grid-cols-3 gap-5 pb-5">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pb-5">
                         {bestCareer.matchedCareers?.map((content) => {
                           const percentageMap = {
                             R: bestCareer.realistic.percentage,
@@ -886,7 +886,7 @@ const Result = () => {
                           pageBreakInside: "avoid",
                         }}
                       >
-                        <div className="flex flex-col items-center py-10">
+                        <div className="flex flex-col  items-center py-10">
                           <h1 className="text-3xl font-roboto font-bold text-center pb-5">
                             Data Visualization{" "}
                           </h1>
@@ -895,16 +895,16 @@ const Result = () => {
                             data-aos="fade-up"
                             data-aos-duration="1500"
                           >
-                            <div className=" flex flex-col items-center ">
+                            <div className=" flex flex-col items-center md:order-1 order-2">
                               <h1 className="text-2xl font-roboto font-bold text-center pb-5">
                                 Personality Overview
                               </h1>
-                              <p className="block  pb-3 text-sm/7 text-justify">
+                              <p className="block  pb-3 text-sm/7 text-justify  ">
                                 {bestCareer.primaryCareerMatch.typeDesc}
                               </p>
                             </div>
                             <div
-                              className="flex flex-col
+                              className="flex flex-col md:order-2 order-1
                               bg-white
                               shadow-sm
                               p-6 rounded-3xl "

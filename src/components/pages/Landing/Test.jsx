@@ -23,7 +23,7 @@ const Test = () => {
             decision about your future has never been easier.
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 py-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 py-10">
             <div class="max-w-2xl rounded shadow-lg mx-auto">
               <div className="flex border-solid-2 bg-gray-50">
                 {" "}

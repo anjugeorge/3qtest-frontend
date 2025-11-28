@@ -45,8 +45,8 @@ const TestPage = () => {
         {" "}
         <div className="grid grid-cols-1 md:grid-cols-2 bg-white pt-10">
           {" "}
-          <div className="">
-            <img src="/assets/puzzle.png" className="md:max-w-sm" />
+          <div className="mx-auto">
+            <img src="/assets/puzzle.png" className="max-w-64 md:max-w-80" />
           </div>
           <div className="my-auto">
             <h1 className="text-3xl font-roboto font-bold text-center">
@@ -97,8 +97,11 @@ const TestPage = () => {
         {" "}
         <div className="grid grid-cols-1 md:grid-cols-2 bg-white pb-10">
           {" "}
-          <div className="">
-            <img src="/assets/careerHat.png" className="md:max-w-sm" />
+          <div className="mx-auto">
+            <img
+              src="/assets/careerHat.png"
+              className=" max-w-72 md:max-w-96"
+            />
           </div>
           <div className="my-auto">
             <h1 className="text-3xl font-roboto font-bold text-center">
