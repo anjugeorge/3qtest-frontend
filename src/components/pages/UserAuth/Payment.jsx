@@ -98,8 +98,8 @@ const Payment = () => {
                 To view your Career Test results, take advantage of our special
                 introductory offer!
                 <br />
-                Pay only <strong className="text-blue-800">$4.99</strong>{" "}
-                <span className=" line-through text-gray-500">$9.99</span> (50%
+                Pay only <strong className="text-blue-800">$0.50</strong>{" "}
+                <span className=" line-through text-gray-500">$1.00</span> (50%
                 off). This unlocks your personalized career recommendations and
                 suitable career paths.
               </p>
