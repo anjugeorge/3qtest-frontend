@@ -5,6 +5,7 @@ import {
   calculateScoreAPI,
   getProtectedData,
   getTestResultsAPI,
+  sendEmailAPI,
 } from "../../../api/apiService";
 import { AuthContext } from "../../../context/AuthContext";
 import Payment from "../UserAuth/Payment";
@@ -499,14 +500,8 @@ const Result = () => {
 
     try {
       setIsLoading(true);
-      const response = await axios.post(
-        "http://localhost:3000/sendResultsAsEmail",
-        formData,
-        {
-          headers: { "Content-Type": "multipart/form-data" },
-          withCredentials: true,
-        }
-      );
+      const response = await sendEmailAPI(formData);
+
       setIsLoading(false);
       alert("Email sent successfully");
       console.log(response.data);

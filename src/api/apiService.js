@@ -205,3 +205,16 @@ export const paymentAccess = async () => {
     throw error;
   }
 };
+
+export const sendEmailAPI = async (formData) => {
+  try {
+    const response = await axiosInstance.post(`/sendResultsAsEmail`, formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+      withCredentials: true,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error sending email:", error);
+    throw error;
+  }
+};
