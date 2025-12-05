@@ -1,15 +1,11 @@
 import axios from "axios";
 import React, { useContext, useEffect, useState } from "react";
-import { useLocation } from "react-router";
 import { useNavigate } from "react-router";
-import {
-  checkoutAPI,
-  getProtectedData,
-  paymentAccess,
-} from "../../../api/apiService";
+import { checkoutAPI } from "../../../api/apiService";
 import { AuthContext } from "../../../context/AuthContext";
 
 const Payment = () => {
+  const { isLoggedIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
 
@@ -49,7 +45,7 @@ const Payment = () => {
       if (!isLoggedIn) {
         alert("please login and take test");
         navigate("/");
-      } else if (isLoggedIn && error.response.status === 403) {
+      } else if (isLoggedIn && error.response?.status === 403) {
         alert("Please complete the test");
         navigate("/career-assessment");
       }
@@ -59,7 +55,7 @@ const Payment = () => {
     <>
       <div
         id="authentication-modal"
-        tabindex="-1"
+        tabIndex="-1"
         aria-hidden="true"
         className="backdrop-blur-sm flex fixed  z-50 justify-center items-center w-full inset-0 h-[calc(100%-1rem)] max-h-full"
       >
@@ -84,9 +80,9 @@ const Payment = () => {
                 >
                   <path
                     stroke="currentColor"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
                     d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                   />
                 </svg>
@@ -107,7 +103,7 @@ const Payment = () => {
             <div className="p-4 md:p-5">
               <form className="space-y-4" action="#">
                 <button
-                  type="submit"
+                  type="button"
                   onClick={checkout}
                   className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                 >

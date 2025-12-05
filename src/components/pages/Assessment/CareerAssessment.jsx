@@ -30,19 +30,31 @@ const CareerAssessment = () => {
 
   const options = radioOptions(selectedValue);
   console.log(isLoggedIn);
+
   useEffect(() => {
+    let isCancelled = false; // ✅ Move outside the async function
+
     async function getTestResults() {
       try {
         if (isLoggedIn) {
           const response = await getTestResultsAPI("Career Test");
-          //console.log("response", response);
-          //else {
-          navigate(`/results`, {
-            state: { testType: "Career Test" },
-          });
-          //}
+
+          if (isCancelled) return; // ✅ Check before state updates
+
+          if (response.showPaymentModal) {
+            setShowPayment(true);
+            alert(
+              "You have completed the test. To view your results, please proceed to payment"
+            );
+          } else {
+            navigate(`/results`, {
+              state: { testType: "Career Test" },
+            });
+          }
         }
       } catch (error) {
+        if (isCancelled) return; // ✅ Also check in catch block
+
         const isLoggedInOnce = sessionStorage.getItem("isLoggedInOnce");
 
         if (
@@ -57,20 +69,29 @@ const CareerAssessment = () => {
           );
           sessionStorage.removeItem("isLoggedInOnce");
           window.location.href = "/";
-
           return;
         }
 
-        if (error.status === 403) {
+        if (error.response?.status === 403) {
+          // ✅ Fixed: error.response.status
           const response = await getCareerQuestionsAPI();
+
+          if (isCancelled) return; // ✅ Check before state updates
+
           setQuestionId(response.id);
           setQuestions(response.question);
         }
-        console.log("Error Check: ", error.status);
+
+        console.log("Error Check:", error.response?.status);
       }
     }
+
     getTestResults();
-  }, [isLoggedIn]);
+
+    return () => {
+      isCancelled = true; // ✅ Cleanup sets flag
+    };
+  }, [isLoggedIn, navigate]); // ✅ Add navigate to dependencies
 
   function closePaymentModal() {
     setIsPaymentModalOpen(!isPaymentModalOpen);

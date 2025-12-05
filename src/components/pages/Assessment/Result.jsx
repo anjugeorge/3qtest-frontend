@@ -189,6 +189,7 @@ const Result = () => {
     setIsModalOpen(false);
   }
   React.useEffect(() => {
+    let isCancelled = false;
     if (!user) {
       window.location.href = "/";
 
@@ -207,6 +208,7 @@ const Result = () => {
     async function getTestResults() {
       try {
         const response = await getTestResultsAPI(testType);
+        if (isCancelled) return;
         if (response.showPaymentModal) {
           setShowPayment(true);
           alert(
@@ -222,6 +224,7 @@ const Result = () => {
           calculateScore(questionIds, testResults);
         }
       } catch (error) {
+        if (isCancelled) return;
         const isLoggedInOnce = sessionStorage.getItem("isLoggedInOnce");
 
         if (
@@ -242,6 +245,9 @@ const Result = () => {
       }
     }
     getTestResults();
+    return () => {
+      isCancelled = true;
+    };
   }, [user, testType]);
 
   async function calculateScore(id, result) {
