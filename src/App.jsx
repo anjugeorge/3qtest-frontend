@@ -18,7 +18,7 @@ import CareerAssessment from "./components/pages/Assessment/CareerAssessment";
 import Success from "./components/pages/Assessment/Success";
 import { AuthProvider } from "./context/AuthContext";
 import NotFound from "./components/pages/UserAuth/NotFound";
-import Loading from "./components/pages/Loading/loading";
+//import Loading from "./components/pages/Loading/loading";
 const AppContent = () => {
   return (
     <>
