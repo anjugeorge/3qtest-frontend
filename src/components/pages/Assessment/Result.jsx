@@ -254,18 +254,12 @@ const Result = () => {
     try {
       let response;
       if (testType === "Career Test") {
-        //if (user.is_paid === 1) {
-        //setShowPayment(false);
         response = await calculateCareerScoreAPI(
           id.join(","),
           result.join(",")
         );
-        //} else {
-        //setShowPayment(true);
-        //alert(
+
         ("You have completed the test. To view your results, please proceed to payment");
-        //);
-        //}
       } else if (testType === "Personality Test") {
         response = await calculateScoreAPI(id.join(","), result.join(","));
       }
