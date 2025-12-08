@@ -29,11 +29,11 @@ const CareerAssessmentHero = () => {
               environments
               <br /> where you're most likely to succeed and feel fulfilled.
             </p>
-            <div className="mt-10 mr-20 ml-20 flex items-center space-x-2.5 border border-violet-500/30 rounded-full bg-purple-100 p-1 text-sm text-purple-800">
-              <div className="flex items-center space-x-1 bg-purple-900 text-white border border-violet-500 rounded-3xl px-3 py-1">
+            <div class="mt-10 md:mr-20 md:ml-20 py-2  md:flex items-center space-x-2.5 border border-violet-500/30 md:rounded-full bg-purple-100 p-1 text-sm text-purple-800">
+              <div class="flex items-center space-x-1 bg-purple-900 text-white border border-violet-500 rounded-3xl px-3 py-1">
                 <p> Special Introductory Offer!</p>
               </div>
-              <p className="pr-3">
+              <p class="md:pr-3 text-center py-3">
                 Get 50% off! Pay only $4.99 (was $9.99) to unlock your
                 personalized career recommendations.
               </p>

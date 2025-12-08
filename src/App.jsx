@@ -18,7 +18,8 @@ import CareerAssessment from "./components/pages/Assessment/CareerAssessment";
 import Success from "./components/pages/Assessment/Success";
 import { AuthProvider } from "./context/AuthContext";
 import NotFound from "./components/pages/UserAuth/NotFound";
-//import Loading from "./components/pages/Loading/loading";
+import Loading from "./components/pages/Loading/loading";
+import ResetPassword from "./components/pages/UserAuth/ResetPassword";
 const AppContent = () => {
   return (
     <>
@@ -29,6 +30,15 @@ const AppContent = () => {
           <Route path="/" element={<Landing />}></Route>
           <Route path="/about-us" element={<AboutUsPage />}></Route>
           <Route path="/test" element={<TestPage />}></Route>
+          <Route
+            path="/resetPassword"
+            element={
+              <>
+                <Landing />
+                <ResetPassword />
+              </>
+            }
+          ></Route>
           <Route
             path="/personality-assessment"
             element={<PersonalityAssessment />}

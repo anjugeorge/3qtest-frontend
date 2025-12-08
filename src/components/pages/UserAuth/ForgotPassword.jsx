@@ -1,68 +1,71 @@
 import React, { useState } from "react";
 import { forgotPasswordAPI } from "../../../api/apiService";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 const ForgotPassword = () => {
-  const [newPassword, setNewPassword] = useState({
-    email: "",
-    password: "",
-  });
+  const [email, setEmail] = useState("");
   const [isResetPasswordOpen, setResetPasswordOpen] = useState(true);
-  const [showPassword, setShowPassword] = useState(false);
-  function toggleShowPassword(event) {
-    event.preventDefault();
-    setShowPassword((prevState) => !prevState);
-  }
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   function closeResetPassword() {
     setResetPasswordOpen(false);
   }
+
   function handleChange(e) {
-    const newValue = e.target.value;
-    const inputName = e.target.name;
-    setNewPassword((prevValue) => {
-      if (inputName === "email") {
-        return {
-          email: newValue,
-          password: prevValue.password,
-        };
-      } else if (inputName === "password") {
-        return {
-          email: prevValue.email,
-          password: newValue,
-        };
-      }
-    });
+    setEmail(e.target.value);
   }
 
-  const resetPassword = async (event) => {
+  function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  }
+
+  const sendResetLink = async (event) => {
     try {
       event.preventDefault();
-      if (!newPassword.email || !newPassword.password) {
-        alert("Please fill in both email and password.");
+
+      if (!email) {
+        alert("Please enter your email address.");
         return;
       }
-      const response = await forgotPasswordAPI(
-        newPassword.email,
-        newPassword.password
+
+      if (!isValidEmail(email)) {
+        alert("Please enter a valid email address.");
+        return;
+      }
+
+      setIsSubmitting(true);
+      const response = await forgotPasswordAPI(email);
+
+      alert(
+        "Password reset link has been sent to your email. Please check your inbox."
       );
+      setEmail("");
       closeResetPassword();
-      alert("Password changed successfully");
     } catch (err) {
+      if (err.status === 404) {
+        alert("No account found with this email address.");
+      } else {
+        alert(`${err.message || "An error occurred"}. Please try again later.`);
+      }
       console.log("Error", err);
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
   return (
     <>
       {isResetPasswordOpen && (
         <div
           id="authentication-modal"
-          tabindex="-1"
+          tabIndex="-1"
           aria-hidden="true"
-          className="flex fixed  z-50 justify-center items-center w-full inset-0 h-[calc(100%-1rem)] max-h-full"
+          className="flex fixed z-50 justify-center items-center w-full inset-0 max-h-full"
         >
           <div className="relative p-4 w-full max-w-md max-h-full">
-            <div className="relative  shadow-lg bg-gray-100 h-[400px] overflow-y-auto">
+            <div className="relative shadow-lg bg-gray-100">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-900 ">
+                <h3 className="text-xl font-semibold text-gray-900">
                   Reset Password
                 </h3>
                 <button
@@ -80,9 +83,9 @@ const ForgotPassword = () => {
                   >
                     <path
                       stroke="currentColor"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
                       d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6"
                     />
                   </svg>
@@ -90,57 +93,39 @@ const ForgotPassword = () => {
                 </button>
               </div>
               <div className="p-4 md:p-5">
-                <form className="space-y-4" action="#">
+                <p className="text-sm text-gray-600 mb-4">
+                  Enter your email address and we'll send you a link to reset
+                  your password.
+                </p>
+                <form className="space-y-4" autoComplete="on">
                   <div>
                     <label
-                      for="fName"
-                      className="block mb-2 text-sm font-medium text-gray-900 "
+                      htmlFor="email"
+                      className="block mb-2 text-sm font-medium text-gray-900"
                     >
-                      Enter Your Email
+                      Email Address
                     </label>
                     <input
                       type="email"
                       name="email"
                       id="email"
-                      placeholder="••••••••"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400 "
+                      placeholder="name@company.com"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:placeholder-gray-400"
                       required
-                      value={newPassword.email}
+                      value={email}
                       onChange={handleChange}
+                      autoComplete="email"
+                      disabled={isSubmitting}
                     />
-                  </div>
-                  <div>
-                    <label
-                      for="password"
-                      className="block mb-2 text-sm font-medium text-gray-900 "
-                    >
-                      Enter new password
-                    </label>
-                    <input
-                      type={showPassword ? "text" : "password"}
-                      name="password"
-                      id="password"
-                      placeholder="••••••••"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:placeholder-gray-400 "
-                      minLength={8}
-                      required
-                      value={newPassword.password}
-                      onChange={handleChange}
-                    />
-                    <button
-                      className="absolute right-8 md:top-[13.6rem] top-[13rem]"
-                      onClick={toggleShowPassword}
-                    >
-                      {showPassword ? <FaEyeSlash /> : <FaEye />}
-                    </button>
                   </div>
 
                   <button
                     type="submit"
-                    onClick={resetPassword}
-                    className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                    onClick={sendResetLink}
+                    disabled={isSubmitting}
+                    className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Reset Password
+                    {isSubmitting ? "Sending..." : "Send Reset Link"}
                   </button>
                 </form>
               </div>

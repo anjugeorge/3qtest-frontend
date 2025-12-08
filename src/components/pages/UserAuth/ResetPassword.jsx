@@ -1,35 +1,34 @@
 import React, { useState } from "react";
-import { registerAPI } from "../../../api/apiService";
+import { forgotPasswordAPI, resetPasswordAPI } from "../../../api/apiService";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import TermsAndConditions from "../Terms-Conditions/TermsAndConditions";
+import { useNavigate, useSearchParams } from "react-router";
 import cryptoRandomString from "crypto-random-string";
-const Register = () => {
-  const [register, setRegister] = useState({
-    fullName: "",
-    email: "",
-    password: "",
+const ResetPassword = () => {
+  const [resetNewPassword, setResetNewPassword] = useState({
+    newPassword: "",
     confirmPassword: "",
   });
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const [isCreateAccountOpen, setCreateAccountOpen] = useState(true);
+  const [isResetPasswordOpen, setResetPasswordOpen] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [searchParams] = useSearchParams();
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const navigate = useNavigate();
+  const token = searchParams.get("resetToken");
 
   const generateStrongPassword = (event) => {
     const strongPassword = cryptoRandomString({
       length: 12,
       type: "ascii-printable", // includes uppercase, lowercase, numbers, and symbols
     });
-    setRegister((prevValue) => ({
+    setResetNewPassword((prevValue) => ({
       ...prevValue,
-      password: strongPassword,
+      newPassword: strongPassword,
       confirmPassword: strongPassword,
     }));
     setShowPassword(true);
     setShowConfirmPassword(true);
   };
-
   function toggleShowPassword(event) {
     event.preventDefault();
     setShowPassword((prevState) => !prevState);
@@ -38,133 +37,80 @@ const Register = () => {
     event.preventDefault();
     setShowConfirmPassword((prevState) => !prevState);
   }
-  function closeCreateAccount() {
-    setCreateAccountOpen(false);
-  }
-  function openModal() {
-    setIsModalOpen(!isModalOpen);
-  }
-  function closeModal() {
-    setIsModalOpen(false);
+  function closeResetPassword() {
+    setResetPasswordOpen(false);
   }
   function handleChange(e) {
-    e.preventDefault();
     const newValue = e.target.value;
     const inputName = e.target.name;
-    setRegister((prevValue) => {
-      if (inputName === "fName") {
+    setResetNewPassword((prevValue) => {
+      if (inputName === "newPassword") {
         return {
-          fullName: newValue,
-          email: prevValue.email,
-          password: prevValue.password,
-          confirmPassword: prevValue.confirmPassword,
-        };
-      } else if (inputName === "email") {
-        return {
-          fullName: prevValue.fullName,
-          email: newValue,
-          password: prevValue.password,
-          confirmPassword: prevValue.confirmPassword,
-        };
-      } else if (inputName === "password") {
-        return {
-          fullName: prevValue.fullName,
-          email: prevValue.email,
-          password: newValue,
+          newPassword: newValue,
           confirmPassword: prevValue.confirmPassword,
         };
       } else if (inputName === "confirmPassword") {
         return {
-          fullName: prevValue.fullName,
-          email: prevValue.email,
-          password: prevValue.password,
+          newPassword: prevValue.newPassword,
           confirmPassword: newValue,
         };
       }
     });
   }
 
-  function isValidEmail(email) {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(email);
-  }
-
-  const userRegister = async (event) => {
+  const resetPassword = async (event) => {
     try {
       event.preventDefault();
-      if (!register.fullName) {
-        alert("Please enter your full name.");
+      setShowPassword(false);
+      setShowConfirmPassword(false);
+      if (!resetNewPassword.newPassword || !resetNewPassword.confirmPassword) {
+        alert("Please fill in both email and password.");
         return;
       }
-
-      if (!isValidEmail(register.email)) {
-        alert("Please enter a valid email address.");
+      if (resetNewPassword.newPassword !== resetNewPassword.confirmPassword) {
+        alert("do no match");
         return;
       }
-      if (register.password.length < 8) {
-        alert("Password must be at least 8 characters long.");
-        return;
-      }
-      if (register.password !== register.confirmPassword) {
-        alert("Password doesnot match to confirm password");
-        return;
-      }
-      const response = await registerAPI(
-        register.fullName,
-        register.email,
-        register.password,
-        register.confirmPassword
+      console.log("token", token);
+      console.log("newPassword", resetNewPassword.newPassword);
+      const response = await resetPasswordAPI(
+        token,
+        resetNewPassword.newPassword
+        //resetNewPassword.confirmPassword
       );
-      alert("Account created successfully");
-      setRegister({
-        fullName: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
-      });
-      closeCreateAccount();
+
+      closeResetPassword();
+      //navigate("/");
+      alert("Password changed successfully");
     } catch (err) {
       if (err.status === 400) {
         alert(
-          "This email is already registered. Please use a different email."
+          "Your reset link has expired or is invalid. Please go back and request a new password reset link."
         );
-        setRegister({
-          fullName: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        });
-      } else {
-        alert(`${err.message} occured. Please try again later.`);
-        setRegister({
-          fullName: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        });
       }
 
+      closeResetPassword();
       console.log("Error", err);
     }
   };
   return (
     <>
-      {isCreateAccountOpen && (
+      {isResetPasswordOpen && (
         <div
           id="authentication-modal"
           tabindex="-1"
           aria-hidden="true"
-          className="flex fixed  z-50 justify-center items-center w-full inset-0  max-h-full overflow-y-auto"
+          className="flex fixed  z-50 justify-center items-center w-full inset-0 h-[calc(100%-1rem)] max-h-full"
         >
           <div className="relative p-4 w-full max-w-md max-h-full">
-            <div className="relative  shadow-lg bg-gray-100">
+            <div className="relative  shadow-lg bg-gray-100 h-[400px] overflow-y-auto">
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t dark:border-gray-600 border-gray-200">
-                <h3 className="text-xl font-semibold text-gray-900">
-                  Sign up for an account
+                <h3 className="text-xl font-semibold text-gray-900 ">
+                  Reset Password
                 </h3>
                 <button
                   type="button"
-                  onClick={closeCreateAccount}
+                  onClick={closeResetPassword}
                   className="end-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center dark:hover:bg-gray-600 dark:hover:text-white"
                   data-modal-hide="authentication-modal"
                 >
@@ -187,51 +133,12 @@ const Register = () => {
                 </button>
               </div>
               <div className="p-4 md:p-5">
-                <form className="space-y-4" autoComplete="on">
-                  <div>
-                    <label
-                      for="fName"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      Your full name
-                    </label>
-                    <input
-                      type="text"
-                      name="fName"
-                      id="fName"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 00 dark:placeholder-gray-400 "
-                      maxLength={50}
-                      placeholder="full name"
-                      required
-                      value={register.fullName}
-                      onChange={handleChange}
-                    />
-                  </div>
-                  <div>
-                    <label
-                      for="email"
-                      className="block mb-2 text-sm font-medium text-gray-900"
-                    >
-                      Your email
-                    </label>
-                    <input
-                      type="email"
-                      name="email"
-                      id="email"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5  dark:placeholder-gray-400"
-                      placeholder="name@company.com"
-                      required
-                      value={register.email}
-                      onChange={handleChange}
-                      autoComplete="email"
-                    />
-                  </div>
-
+                <form className="space-y-4" action="#">
                   <div className="">
                     {" "}
                     <div>
                       <label
-                        htmlFor="password"
+                        htmlFor="newPassword"
                         className="block mb-2 text-sm font-medium text-gray-900"
                       >
                         Your password
@@ -239,13 +146,13 @@ const Register = () => {
                       <div className="relative">
                         <input
                           type={showPassword ? "text" : "password"}
-                          name="password"
-                          id="password"
+                          name="newPassword"
+                          id="newPassword"
                           placeholder="••••••••"
                           className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:placeholder-gray-400"
                           required
                           minLength={8}
-                          value={register.password}
+                          value={resetNewPassword.newPassword}
                           onChange={handleChange}
                           autoComplete="new-password"
                         />
@@ -270,7 +177,6 @@ const Register = () => {
                     </div>
                   </div>
 
-                  {/* Confirm Password field */}
                   <div>
                     <label
                       htmlFor="confirmPassword"
@@ -286,7 +192,7 @@ const Register = () => {
                         placeholder="••••••••"
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 pr-10 dark:placeholder-gray-400"
                         required
-                        value={register.confirmPassword}
+                        value={resetNewPassword.confirmPassword}
                         onChange={handleChange}
                         autoComplete="new-password"
                       />
@@ -299,28 +205,15 @@ const Register = () => {
                       </button>
                     </div>
                   </div>
+
                   <button
                     type="submit"
-                    onClick={userRegister}
+                    onClick={resetPassword}
                     className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   >
-                    Create Account
+                    Reset Password
                   </button>
                 </form>
-                <div className="mt-4">
-                  <p className="text-sm text-gray-500  text-center">
-                    By creating an account, you agree to our{" "}
-                    <button
-                      onClick={openModal}
-                      className="font-normal text-blue-600 hover:underline dark:text-blue-500"
-                    >
-                      Terms and Conditions
-                    </button>
-                  </p>
-                  {isModalOpen && (
-                    <TermsAndConditions closeModal={closeModal} />
-                  )}
-                </div>
               </div>
             </div>
           </div>
@@ -330,4 +223,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default ResetPassword;

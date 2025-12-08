@@ -1,3 +1,4 @@
+import axios from "axios";
 import axiosInstance from "./axiosInstance";
 
 export const getProtectedData = async () => {
@@ -30,11 +31,10 @@ export const getProtectedData = async () => {
   }
 };
 
-export const forgotPasswordAPI = async (email, password) => {
+export const forgotPasswordAPI = async (email) => {
   try {
     const response = await axiosInstance.post(`/forgotPassword`, {
       email: email,
-      password: password,
     });
     return response.data;
   } catch (error) {
@@ -43,12 +43,30 @@ export const forgotPasswordAPI = async (email, password) => {
   }
 };
 
-export const registerAPI = async (fullName, email, password) => {
+export const resetPasswordAPI = async (token, newPassword) => {
+  try {
+    const response = await axiosInstance.post(`/resetPassword`, {
+      token: token,
+      newPassword: newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const registerAPI = async (
+  fullName,
+  email,
+  password,
+  confirmPassword
+) => {
   try {
     const response = await axiosInstance.post(`/register`, {
       fullName: fullName,
       email: email,
       password: password,
+      confirmPassword: confirmPassword,
     });
     return response.data;
   } catch (error) {
