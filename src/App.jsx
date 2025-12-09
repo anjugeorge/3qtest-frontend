@@ -18,7 +18,6 @@ import CareerAssessment from "./components/pages/Assessment/CareerAssessment";
 import Success from "./components/pages/Assessment/Success";
 import { AuthProvider } from "./context/AuthContext";
 import NotFound from "./components/pages/UserAuth/NotFound";
-import Loading from "./components/pages/Loading/loading";
 import ResetPassword from "./components/pages/UserAuth/ResetPassword";
 import { Buffer } from "buffer";
 window.Buffer = Buffer;
@@ -51,7 +50,6 @@ const AppContent = () => {
           ></Route>
           <Route path="/results" element={<Result />}></Route>
           <Route path="/success" element={<Success />}></Route>
-          <Route path="/loading" element={<Loading />}></Route>
           <Route path="/payment" element={<NotFound />}></Route>
         </Routes>
         <Footer />

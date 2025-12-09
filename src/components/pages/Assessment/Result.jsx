@@ -1,6 +1,6 @@
 import React, { use, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { pdf, PDFDownloadLink } from "@react-pdf/renderer";
 
 import {
   calculateCareerScoreAPI,
@@ -55,6 +55,7 @@ import { LuClipboardPenLine } from "react-icons/lu";
 import { RiTeamFill } from "react-icons/ri";
 import CareerAssessmentPDF from "./CareerAssessmentPDF";
 import domtoimage from "dom-to-image";
+import { FaFileDownload } from "react-icons/fa";
 ChartJS.register(
   RadialLinearScale,
   ArcElement,
@@ -457,7 +458,7 @@ const Result = () => {
 
   let pdfBlob;
 
-  function generatePdfAndSendEmail() {
+  /*function generatePdfAndSendEmail() {
     const element = document.getElementById("forPDF");
 
     const header = document.createElement("div");
@@ -515,10 +516,13 @@ const Result = () => {
 
         sendEmail(pdfBlob);
       });
-  }
+  }*/
 
   // Send PDF as email
-  async function sendEmail(pdfBlob) {
+  async function sendEmail() {
+    const pdfBlob = await pdf(
+      <CareerAssessmentPDF result={bestCareer} user={user} />
+    ).toBlob();
     const formData = new FormData();
     formData.append("pdfFile", pdfBlob, "Career Assessment Report.pdf");
 
@@ -567,10 +571,10 @@ const Result = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="container flex flex-row pt-10">
-                    <div className="ml-auto">
+                  <div className="container flex flex-col  pt-10">
+                    <div className="ml-auto flex gap-2">
                       <PDFDownloadLink
-                        className="mb-1 bg-[#8e7dbe] hover:bg-[#7c62c2]  w-32 h-10 text-white text-[14px] font-bold rounded-lg flex justify-center items-center gap-1"
+                        className="mb-1 bg-green-700 hover:bg-green-800  w-32 h-10 text-white text-[14px] font-bold rounded-lg flex justify-center items-center gap-1"
                         document={
                           <CareerAssessmentPDF
                             result={bestCareer}
@@ -579,20 +583,23 @@ const Result = () => {
                         }
                         fileName="Career_Assessment_Report.pdf"
                       >
-                        {({ loading }) => (
-                          <button>
-                            {loading ? "Preparing..." : "Download PDF"}
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          className="w-32 h-10 text-white text-[14px] font-bold rounded-lg flex justify-center items-center gap-1 "
+                        >
+                          <FaFileDownload className="text-lg" />
+                          Save PDF
+                        </button>
                       </PDFDownloadLink>
-                      {/* <button
-                        onClick={generatePdfAndSendEmail}
+
+                      <button
+                        onClick={sendEmail}
                         type="button"
-                        className="mb-1 bg-purple-600 hover:bg-purple-700  w-32 h-10 text-white text-[14px] font-bold rounded-lg flex justify-center items-center gap-1"
+                        className="mb-1 bg-blue-600 hover:bg-blue-700  w-32 h-10 text-white text-[14px] font-bold rounded-lg flex justify-center items-center gap-1"
                       >
                         <IoIosSend className="text-lg" />
                         Email Report
-                      </button> */}
+                      </button>
                       {isLoading && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
                           <button

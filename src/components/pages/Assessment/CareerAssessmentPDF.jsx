@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
   whatToImproveBox: { backgroundColor: "#E0F2FE" },
   idealFutureBox: { backgroundColor: "#e920630d" },
   box: {
-    marginBottom: 10,
+    marginBottom: 5,
     padding: 10,
     borderRadius: 5,
     backgroundColor: "#e0eaf4",
