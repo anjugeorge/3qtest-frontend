@@ -1,5 +1,7 @@
-import React, { use, useContext, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+
 import {
   calculateCareerScoreAPI,
   calculateScoreAPI,
@@ -51,6 +53,8 @@ import { FaSearch } from "react-icons/fa";
 import { FaHandsHelping } from "react-icons/fa";
 import { LuClipboardPenLine } from "react-icons/lu";
 import { RiTeamFill } from "react-icons/ri";
+import CareerAssessmentPDF from "./CareerAssessmentPDF";
+import domtoimage from "dom-to-image";
 ChartJS.register(
   RadialLinearScale,
   ArcElement,
@@ -182,6 +186,25 @@ const Result = () => {
   const location = useLocation();
   const testType = location.state?.testType || null;
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [chartDataUrl, setChartDataUrl] = useState("");
+  useEffect(() => {
+    const captureChart = async () => {
+      const chartDiv = document.getElementById("polarAreaChartDiv");
+      if (!chartDiv) return null;
+
+      try {
+        const dataUrl = await domtoimage.toPng(chartDiv);
+        setChartDataUrl(dataUrl); // save for PDF
+        //return dataUrl;
+      } catch (error) {
+        console.error("Error capturing chart:", error);
+        return null;
+      }
+    };
+
+    captureChart();
+  }, []);
+
   function openModal() {
     setIsModalOpen(!isModalOpen);
   }
@@ -381,6 +404,7 @@ const Result = () => {
   function MyPolarAreaChart({ bestCareer }) {
     return (
       <PolarArea
+        id="polarAreaChartDiv"
         data={{
           labels: [
             "Practical", // Realistic
@@ -545,14 +569,30 @@ const Result = () => {
                   </div>
                   <div className="container flex flex-row pt-10">
                     <div className="ml-auto">
-                      <button
+                      <PDFDownloadLink
+                        className="mb-1 bg-[#8e7dbe] hover:bg-[#7c62c2]  w-32 h-10 text-white text-[14px] font-bold rounded-lg flex justify-center items-center gap-1"
+                        document={
+                          <CareerAssessmentPDF
+                            result={bestCareer}
+                            user={user}
+                          />
+                        }
+                        fileName="Career_Assessment_Report.pdf"
+                      >
+                        {({ loading }) => (
+                          <button>
+                            {loading ? "Preparing..." : "Download PDF"}
+                          </button>
+                        )}
+                      </PDFDownloadLink>
+                      {/* <button
                         onClick={generatePdfAndSendEmail}
                         type="button"
                         className="mb-1 bg-purple-600 hover:bg-purple-700  w-32 h-10 text-white text-[14px] font-bold rounded-lg flex justify-center items-center gap-1"
                       >
                         <IoIosSend className="text-lg" />
                         Email Report
-                      </button>
+                      </button> */}
                       {isLoading && (
                         <div className="fixed inset-0 z-50 flex items-center justify-center backdrop-blur-sm">
                           <button
@@ -907,6 +947,7 @@ const Result = () => {
                               </p>
                             </div>
                             <div
+                              id="polarAreaChartDiv"
                               className="flex flex-col md:order-2 order-1
                               bg-white
                               shadow-sm

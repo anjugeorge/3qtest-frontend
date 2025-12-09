@@ -20,6 +20,8 @@ import { AuthProvider } from "./context/AuthContext";
 import NotFound from "./components/pages/UserAuth/NotFound";
 import Loading from "./components/pages/Loading/loading";
 import ResetPassword from "./components/pages/UserAuth/ResetPassword";
+import { Buffer } from "buffer";
+window.Buffer = Buffer;
 const AppContent = () => {
   return (
     <>

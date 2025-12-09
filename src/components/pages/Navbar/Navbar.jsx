@@ -131,7 +131,7 @@ const Navbar = () => {
             </ul>
           </div>
 
-          <div className="ml-auto">
+          <div className="ml-auto flex flex-col items-center md:flex-row">
             {!isLoggedIn ? (
               <button
                 onClick={toggleModal}
@@ -143,12 +143,12 @@ const Navbar = () => {
             ) : (
               <>
                 {" "}
-                <span className="me-2 text-gray-600 text-[14px]">
+                <span className="truncate max-w-20 md:max-w-full md:me-2 mr-0 text-gray-600 text-[14px]">
                   Hi, {user.name}!
                 </span>
                 <button
                   onClick={handleLogout}
-                  className="mx-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="mr-0 mx-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   type="button"
                 >
                   Logout
